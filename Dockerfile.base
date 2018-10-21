@@ -1,0 +1,16 @@
+FROM arm32v6/python:3.7-alpine
+
+RUN apk update && apk add --no-cache g++ \
+python3-dev \
+libffi-dev \
+openssl-dev \
+python3 \
+sdl \
+sdl-dev \
+sdl_mixer \
+sdl_mixer-dev \
+sdl_image \
+sdl_image-dev \
+freetype \
+freetype-dev && \
+pip3 install --upgrade pip setuptools
