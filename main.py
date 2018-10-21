@@ -1,31 +1,22 @@
 import pygame
-import pygame.gfxdraw
+import os
+from time import sleep
 
-def main():
-    pygame.init()
-    screen = pygame.display.set_mode((500,500))
-    screen.fill((255, 0, 0))
-    s = pygame.Surface(screen.get_size(), pygame.SRCALPHA, 32)
-    pygame.draw.line(s, (0,0,0), (250, 250), (250+200,250))
+#Colours
+WHITE = (255,255,255)
 
-    width = 1
-    for a_radius in range(width):
-        radius = 200
-        pygame.gfxdraw.aacircle(s, 250, 250, radius-a_radius, (0, 0, 0))
+os.putenv('SDL_FBDEV', '/dev/fb1')
+pygame.init()
+pygame.mouse.set_visible(False)
+lcd = pygame.display.set_mode()
+lcd.fill((0,0,0))
+pygame.display.update()
 
-    screen.blit(s, (0, 0))
-    pygame.display.flip()
-    try:
-        while 1:
-            event = pygame.event.wait()
-            if event.type == pygame.QUIT:
-                break
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE or event.unicode == 'q':
-                    break
-            pygame.display.flip()
-    finally:
-        pygame.quit()
+font_big = pygame.font.Font(None, 100)
 
-if __name__ == '__main__':
-    main()
+while True:
+    text_surface = font_big.render('Hello World', True, WHITE)
+    rect = text_surface.get_rect(center=(240,160))
+    lcd.blit(text_surface, rect)
+    pygame.display.update()
+    sleep(0.1)
