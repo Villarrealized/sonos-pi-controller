@@ -1,11 +1,11 @@
 version: "3"
 services:
-  web:
-    container_name: sonos-pi-controller
+  app:
+    container_name: sonos-pi-touch
     restart: always
     privileged: true
     build: .
-    image: bytegenesis/sonos-pi-controller
+    image: bytegenesis/sonos-pi-touch
     env_file: .env
     volumes:
       - ./:/usr/src/app
