@@ -35,7 +35,7 @@ pygame.mouse.set_visible(False)
 lcd.fill((0,0,0))
 pygame.display.update()
 
-font_big = pygame.font.Font(None, 50)
+font_big = pygame.font.Font(None, 30)
 text_surface = font_big.render('Tap to pause/play music in TV Room', True, WHITE)
 rect = text_surface.get_rect(center=(240,160))
 lcd.blit(text_surface, rect)
