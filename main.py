@@ -2,7 +2,6 @@ import pygame
 from pygame.locals import *
 import os
 from time import sleep
-import RPi.GPIO as GPIO
 from signal import alarm, signal, SIGALRM, SIGKILL
 
 lcd = None
@@ -23,11 +22,6 @@ def init_Pygame():
         alarm(0)
     except Alarm:
         raise KeyboardInterrupt
-
-#Setup the GPIOs as outputs - only 4 and 17 are available
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(4, GPIO.OUT)
-GPIO.setup(17, GPIO.OUT)
 
 #Colours
 WHITE = (255,255,255)
@@ -57,23 +51,11 @@ while True:
     # Scan touchscreen events
     for event in pygame.event.get():
         if(event.type is MOUSEBUTTONDOWN):
+            print "Mouse Down"
             pos = pygame.mouse.get_pos()
             print pos
         elif(event.type is MOUSEBUTTONUP):
+            print "Mouse Up"
             pos = pygame.mouse.get_pos()
             print pos
-            #Find which quarter of the screen we're in
-            x,y = pos
-            if y < 160:
-                if x < 240:
-                    print "off"
-                    GPIO.output(17, False)
-                else:
-                    GPIO.output(4, False)
-            else:
-                if x < 240:
-                    print "on"
-                    GPIO.output(17, True)
-                else:
-                    GPIO.output(4, True)
     sleep(0.1)
