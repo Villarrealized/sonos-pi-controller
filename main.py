@@ -28,20 +28,14 @@ WHITE = (255,255,255)
 
 init_Pygame()
 
-
 pygame.mouse.set_visible(False)
 lcd.fill((0,0,0))
 pygame.display.update()
 
 font_big = pygame.font.Font(None, 50)
-
-touch_buttons = {'17 on':(80,60), '4 on':(240,60), '17 off':(80,180), '4 off':(240,180)}
-
-for k,v in touch_buttons.items():
-    text_surface = font_big.render('%s'%k, True, WHITE)
-    rect = text_surface.get_rect(center=v)
-    lcd.blit(text_surface, rect)
-
+text_surface = font_big.render('Hello World', True, WHITE)
+rect = text_surface.get_rect(center=(240,160))
+lcd.blit(text_surface, rect)
 pygame.display.update()
 
 print "entering main loop"
