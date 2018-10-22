@@ -5,7 +5,7 @@ from time import sleep
 from signal import alarm, signal, SIGALRM, SIGKILL
 import requests
 
-API_URL = os.environ.get('API_URL')
+API_URL = os.getenv('API_URL')
 
 lcd = None
 def init_Pygame():
@@ -36,22 +36,22 @@ lcd.fill((0,0,0))
 pygame.display.update()
 
 font_big = pygame.font.Font(None, 50)
-text_surface = font_big.render('Hello World', True, WHITE)
+text_surface = font_big.render('Tap to pause/play music in TV Room', True, WHITE)
 rect = text_surface.get_rect(center=(240,160))
 lcd.blit(text_surface, rect)
 pygame.display.update()
+
+playing = False
 
 print "entering main loop"
 while True:
     # Scan touchscreen events
     for event in pygame.event.get():
-        if(event.type is MOUSEBUTTONDOWN):
-            print "Mouse Down"
-            pos = pygame.mouse.get_pos()
-            print pos
-        elif(event.type is MOUSEBUTTONUP):
-            requests.post(API_URL + '/room/tv/play')
-            print "Mouse Up"
+        if(event.type is MOUSEBUTTONUP):
+            if playing:
+                requests.post(API_URL + '/room/tv/pause')
+            else:
+                requests.post(API_URL + '/room/tv/play')
             pos = pygame.mouse.get_pos()
             print pos
     sleep(0.1)
