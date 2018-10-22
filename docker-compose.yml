@@ -9,4 +9,5 @@ services:
     env_file: .env
     volumes:
       - ./:/usr/src/app
-      
+    devices:
+      - "/dev/fb1:/dev/fb1"
