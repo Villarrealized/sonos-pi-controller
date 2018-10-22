@@ -26,10 +26,8 @@ def init_Pygame():
 #Colours
 WHITE = (255,255,255)
 
-#init_Pygame()
-pygame.init()
-print "getting lcd"
-lcd = pygame.display.set_mode() 
+init_Pygame()
+
 
 pygame.mouse.set_visible(False)
 lcd.fill((0,0,0))
