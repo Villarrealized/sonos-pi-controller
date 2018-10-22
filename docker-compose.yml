@@ -11,4 +11,3 @@ services:
       - ./:/usr/src/app
     devices:
       - "/dev/fb1:/dev/fb1"
-      - "/dev/input/event0:/dev/input/event0" 
