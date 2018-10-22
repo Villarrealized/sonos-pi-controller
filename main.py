@@ -5,6 +5,8 @@ from time import sleep
 from signal import alarm, signal, SIGALRM, SIGKILL
 import requests
 
+API_URL = os.environ.get('API_URL')
+
 lcd = None
 def init_Pygame():
     global lcd
@@ -48,7 +50,7 @@ while True:
             pos = pygame.mouse.get_pos()
             print pos
         elif(event.type is MOUSEBUTTONUP):
-            requests.post('http://192.168.0.73:8080/room/tv/play')
+            requests.post(API_URL + '/room/tv/play')
             print "Mouse Up"
             pos = pygame.mouse.get_pos()
             print pos
