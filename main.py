@@ -27,10 +27,9 @@ def init_Pygame():
 #Colours
 WHITE = (255,255,255)
 
-os.putenv('SDL_VIDEODRIVER', 'fbcon')
-os.putenv('SDL_FBDEV', '/dev/fb1')
 print "Initializing..."
 init_Pygame()
+
 print "hiding mouse"
 pygame.mouse.set_visible(False)
 print "filling screen with black"
