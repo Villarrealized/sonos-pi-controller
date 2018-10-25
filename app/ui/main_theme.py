@@ -11,4 +11,9 @@ class MainTheme(ui.theme.Theme):
                     state='normal',
                     key='shadowed',
                     value=False)
+
+        self.set(class_name='ImageButton',
+                    state='normal',
+                    key='padding',
+                    value=(0, 0))
                     
