@@ -5,13 +5,14 @@ from time import sleep
 
 import pygame
 from pygame.locals import *
-import pygameui
 from init import init_pygame
+import pygameui as ui
 import requests
 
 # import project files
 import color
 from backlight import Backlight
+from ui.main import MainScene
 
 # Environment Vars
 API_URL = os.getenv('API_URL')
@@ -24,6 +25,11 @@ backlight = Backlight()
 # Initialize pygame
 lcd = init_pygame()
 
+#Add ui
+ui.init('Sonos Pi Touch',(480,320))
+ui.scene.push(MainScene())
+ui.run()
+
 # Handle Terminate signal, exit gracefully.
 def exit_app(sig, frame):
     print "Clearing screen..."
@@ -33,22 +39,25 @@ def exit_app(sig, frame):
     backlight.off()
     sys.exit(0)
 # Register signal
+signal.signal(signal.SIGINT, exit_app)
 signal.signal(signal.SIGTERM, exit_app)
 
-print "entering main loop"
-while True:
-    # Scan touchscreen events
-    for event in pygame.event.get():
-        if(event.type is MOUSEBUTTONUP):
-            if playing:
-                requests.post(API_URL + '/room/tv/pause')
-                playing = False
-            else:
-                requests.post(API_URL + '/room/tv/play')
-                playing = True
-            pos = pygame.mouse.get_pos()
-            print pos
-    sleep(0.02)
+# print "entering main loop"
+# while True:
+#     # Scan touchscreen events
+#     for event in pygame.event.get():
+#         if(event.type is MOUSEBUTTONUP):
+#             if playing:
+#                 requests.post(API_URL + '/room/tv/pause')
+#                 playing = False
+#             else:
+#                 requests.post(API_URL + '/room/tv/play')
+#                 playing = True
+#             pos = pygame.mouse.get_pos()
+#             print pos
+
+#     # Return time to CPU to not hog resources during loop
+#     sleep(0.02)
 
 
     
