@@ -28,11 +28,12 @@ def init_Pygame():
 
 #Colours
 WHITE = (255,255,255)
+NAVY = (11,64,109)
 
 init_Pygame()
 
 pygame.mouse.set_visible(False)
-lcd.fill((0,0,0))
+lcd.fill(NAVY)
 pygame.display.update()
 
 font_big = pygame.font.Font(None, 30)
