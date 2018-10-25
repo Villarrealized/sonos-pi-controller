@@ -1,1 +1,2 @@
-requests
+requests==2.20.0
+# pygameui==0.2.0 already installed in Docker base image

@@ -1,4 +1,4 @@
-version: "3"
+version: "3.2"
 services:
   app:
     container_name: sonos-pi-touch
@@ -10,5 +10,6 @@ services:
     env_file: .env
     volumes:
       - ./:/usr/src/app
+      - '/sys/class/backlight:/sys/class/backlight'
     devices:
-      - "/dev/fb1:/dev/fb1"
+      - "/dev/fb1:/dev/fb1"      
