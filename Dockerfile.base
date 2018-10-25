@@ -1,4 +1,0 @@
-FROM arm32v5/debian
-
-RUN apt-get update && apt-get install -y python-pygame python-pip
-RUN easy_install -U distribute && apt-get install -y git && pip install -e git+https://github.com/Villarrealized/pygameui.git#egg=pygameui
