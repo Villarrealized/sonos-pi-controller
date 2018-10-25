@@ -1,36 +1,27 @@
+import os
+import signal
+import sys
+from time import sleep
 import pygame
 from pygame.locals import *
-import os
-from time import sleep
-from signal import alarm, signal, SIGALRM, SIGKILL
+import pygameui
 import requests
 
-API_URL = os.getenv('API_URL')
+from init import init_pygame
 
-lcd = None
-def init_Pygame():
-    global lcd
-    # this section is an unbelievable nasty hack - for some reason Pygame
-    # needs a keyboardinterrupt to initialise in some limited circs
-    class Alarm(Exception):
-        pass
-    def alarm_handler(signum, frame):
-        raise Alarm
-    signal(SIGALRM, alarm_handler)
-    alarm(3)
-    try:
-        pygame.init()
-        print "getting lcd"
-        lcd = pygame.display.set_mode() 
-        alarm(0)
-    except Alarm:
-        raise KeyboardInterrupt
+API_URL = os.getenv('API_URL')
+BACKLIGHT_CONTROL = os.getenv('BACKLIGHT_CONTROL')
+
+# Turn the backlight on
+with open(BACKLIGHT_CONTROL, 'w') as f:
+    f.write('1')
+
+lcd = init_pygame()
 
 #Colours
+BLACK = (0,0,0)
 WHITE = (255,255,255)
 NAVY = (11,64,109)
-
-init_Pygame()
 
 pygame.mouse.set_visible(False)
 lcd.fill(NAVY)
@@ -43,6 +34,18 @@ lcd.blit(text_surface, rect)
 pygame.display.update()
 
 playing = False
+
+
+def exit_app(sig, frame):
+    print "Clearing screen..."
+    lcd.fill(BLACK)
+    pygame.display.update()
+    print "Turning off backlight..."
+    with open(BACKLIGHT_CONTROL, 'w') as f:
+                f.write('0')
+    sys.exit(0)
+# Register signal
+signal.signal(signal.SIGTERM, exit_app)
 
 print "entering main loop"
 while True:
@@ -58,3 +61,6 @@ while True:
             pos = pygame.mouse.get_pos()
             print pos
     sleep(0.1)
+
+
+    
