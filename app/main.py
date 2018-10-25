@@ -12,7 +12,7 @@ import requests
 # import project files
 import color
 from backlight import Backlight
-from ui.main import MainScene
+from ui.main_scene import MainScene
 
 # Environment Vars
 API_URL = os.getenv('API_URL')
@@ -22,6 +22,19 @@ lcd = None
 playing = False
 backlight = Backlight()
 
+# Handle Terminate signal, exit gracefully.
+def exit_app(sig, frame):
+    print "Clearing screen..."
+    lcd.fill(color.BLACK)
+    pygame.display.update()
+
+    backlight.off()
+    sys.exit(0)
+    
+# Register signal
+signal.signal(signal.SIGINT, exit_app)
+signal.signal(signal.SIGTERM, exit_app)
+
 # Initialize pygame
 lcd = init_pygame()
 
@@ -29,18 +42,6 @@ lcd = init_pygame()
 ui.init('Sonos Pi Touch',(480,320))
 ui.scene.push(MainScene())
 ui.run()
-
-# Handle Terminate signal, exit gracefully.
-def exit_app(sig, frame):
-    print "Clearing screen..."
-    lcd.fill(color.BLACK)
-    pygame.display.update()
-    print "Turning off backlight..."
-    backlight.off()
-    sys.exit(0)
-# Register signal
-signal.signal(signal.SIGINT, exit_app)
-signal.signal(signal.SIGTERM, exit_app)
 
 # print "entering main loop"
 # while True:
