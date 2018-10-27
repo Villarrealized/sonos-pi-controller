@@ -24,14 +24,14 @@ def init_pygame():
         # Set the background color and turn on display
         backlight.on()
         
-        # lcd.fill(color.NAVY)
-        # pygame.display.update()
+        lcd.fill(color.NAVY)
+        pygame.display.update()
 
-        # font_big = pygame.font.Font(None, 30)
-        # text_surface = font_big.render('Tap to pause/play music in TV Room', True, color.WHITE)
-        # rect = text_surface.get_rect(center=(240,160))
-        # lcd.blit(text_surface, rect)
-        # pygame.display.update()
+        font_big = pygame.font.Font(None, 30)
+        text_surface = font_big.render('Tap to pause/play music in TV Room', True, color.WHITE)
+        rect = text_surface.get_rect(center=(240,160))
+        lcd.blit(text_surface, rect)
+        pygame.display.update()
 
         alarm(0)
         return lcd
