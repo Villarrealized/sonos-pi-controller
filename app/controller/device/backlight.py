@@ -12,14 +12,14 @@ class Backlight:
     
     def on(self):
         if not self.enabled:
-            print "Turning display on"
+            print ("Turning display on")
             with open(BACKLIGHT_CONTROL, 'w') as file:
                 file.write('1')
             self.enabled = True
     def off(self):
         print(self.enabled)
         if self.enabled:
-            print "Turning display off"
+            print ("Turning display off")
             with open(BACKLIGHT_CONTROL, 'w') as file:
                 file.write('0')
             self.enabled = False

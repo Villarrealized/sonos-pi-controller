@@ -22,7 +22,7 @@ backlight = Backlight()
 
 # Handle Terminate signal, exit gracefully.
 def exit_app(sig, frame):
-    print "Clearing screen..."
+    print ("Clearing screen...")
     lcd.fill(color.BLACK)
     pygame.display.update()
 
@@ -37,7 +37,7 @@ signal.signal(signal.SIGTERM, exit_app)
 # Initialize pygame
 lcd = init_pygame()
 
-print "entering main loop"
+print ("entering main loop")
 while True:
     # Scan touchscreen events
     for event in pygame.event.get():
@@ -49,7 +49,7 @@ while True:
                 #requests.post(API_URL + '/room/tv/play')
                 playing = True
             pos = pygame.mouse.get_pos()
-            print pos
+            print (pos)
 
     # Return time to CPU to not hog resources during loop
     sleep(0.02)

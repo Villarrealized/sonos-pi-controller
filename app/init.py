@@ -17,7 +17,7 @@ def init_pygame():
     alarm(3)
     try:
         pygame.init()
-        print "getting lcd"
+        print ("getting lcd")
         lcd = pygame.display.set_mode()
         # Hide the mouse
         pygame.mouse.set_visible(False)        
