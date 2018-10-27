@@ -28,7 +28,7 @@ class MainTheme(ui.theme.Theme):
         self.set(class_name='ImageButton',
                     state='normal',
                     key='padding',
-                    value=(6, 6))
+                    value=(8, 8))
         self.set(class_name='ImageButton',
                     state='normal',
                     key='border_color',

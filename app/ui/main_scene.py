@@ -14,4 +14,10 @@ class MainScene(ui.Scene):
         ui.theme.use_theme(self.theme)
 
         self.play_button = ui.ImageButton(ui.Rect(294,181,60,60),pygame.image.load('/usr/src/app/resources/images/play_track.png'))
+        self.play_button.on_clicked.connect(self.test)
         self.add_child(self.play_button)
+    
+    def test(self, btn, mbtn):
+        print "hello"
+
+        
