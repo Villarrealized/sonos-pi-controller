@@ -18,7 +18,7 @@ def init_pygame():
     try:
         pygame.init()
         print "getting lcd"
-        lcd = pygame.display.set_mode()
+        lcd = pygame.display.set_mode([480,320])
         # Hide the mouse
         pygame.mouse.set_visible(False)        
         # Set the background color and turn on display
@@ -31,6 +31,12 @@ def init_pygame():
         text_surface = font_big.render('Tap to pause/play music in TV Room', True, color.WHITE)
         rect = text_surface.get_rect(center=(240,160))
         lcd.blit(text_surface, rect)
+
+        text = font_big.render('Test', True, color.WHITE)
+        rect = pygame.Rect(0,0,100,30)
+        lcd.blit(text, rect)
+
+
         pygame.display.update()
 
         alarm(0)

@@ -43,10 +43,10 @@ while True:
     for event in pygame.event.get():
         if(event.type is MOUSEBUTTONUP):
             if playing:
-                requests.post(API_URL + '/room/tv/pause')
+                #requests.post(API_URL + '/room/tv/pause')
                 playing = False
             else:
-                requests.post(API_URL + '/room/tv/play')
+                #requests.post(API_URL + '/room/tv/play')
                 playing = True
             pos = pygame.mouse.get_pos()
             print pos
