@@ -2,8 +2,8 @@ from signal import alarm, signal, SIGALRM, SIGKILL
 
 import pygame
 
-from backlight import Backlight
-import color
+from controller.device.backlight import Backlight
+from controller.ui import color
 # return the pygame screen
 def init_pygame():
     backlight = Backlight()
@@ -18,7 +18,7 @@ def init_pygame():
     try:
         pygame.init()
         print "getting lcd"
-        lcd = pygame.display.set_mode([480,320])
+        lcd = pygame.display.set_mode()
         # Hide the mouse
         pygame.mouse.set_visible(False)        
         # Set the background color and turn on display
@@ -27,9 +27,9 @@ def init_pygame():
         lcd.fill(color.NAVY)
         pygame.display.update()
 
-        font_big = pygame.font.Font(None, 30)
+        font_big = pygame.font.Font(None, 25)
         text_surface = font_big.render('Tap to pause/play music in TV Room', True, color.WHITE)
-        rect = text_surface.get_rect(center=(240,160))
+        rect = text_surface.get_rect(center=(160,240))
         lcd.blit(text_surface, rect)
 
         text = font_big.render('Test', True, color.WHITE)

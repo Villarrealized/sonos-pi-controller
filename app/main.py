@@ -9,8 +9,8 @@ from init import init_pygame
 import requests
 
 # import project files
-import color
-from backlight import Backlight
+from controller.ui import color
+from controller.device.backlight import Backlight
 
 # Environment Vars
 API_URL = os.getenv('API_URL')
