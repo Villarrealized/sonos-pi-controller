@@ -29,6 +29,7 @@ def exit_app(sig, frame):
     pygame.display.update()
 
     backlight.off()
+    pygame.quit()
     sys.exit(0)
     
 # Register signal
