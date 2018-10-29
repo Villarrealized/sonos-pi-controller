@@ -16,18 +16,21 @@ class View:
 
         self.background_color = None
 
+        self.layout()
+
     def layout(self):
         """Call to have the view layout itself.
 
         Subclasses should invoke this after laying out child
         views and/or updating its own frame.
         """
+        
         self.surface = pygame.Surface(self.frame.size, pygame.SRCALPHA)
 
     def draw(self):
         if self.hidden:
             return False
-        
+            
         if self.background_color is not None:
             self.surface.fill(self.background_color)
 
