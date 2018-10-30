@@ -47,14 +47,14 @@ Window.scene = play_scene
 print ("entering main loop")
 while True:
     # Scan touchscreen events
-    for event in pygame.event.get():
-        mouse_position = pygame.mouse.get_pos()
-        print (mouse_position) 
+    for event in pygame.event.get():        
         if(event.type is MOUSEBUTTONUP):
+            mouse_position = pygame.mouse.get_pos()
+            print (mouse_position) 
             hit_view = Window.scene.hit(mouse_position)
             if hit_view is not None:
-                point = hit_view(mouse_position)
-                hit_view.touch_up(point)
+                print "got a hit in a view"
+                hit_view.mouse_up(mouse_position)
             # if playing:
             #     requests.post(API_URL + '/room/tv/pause')
             #     playing = False

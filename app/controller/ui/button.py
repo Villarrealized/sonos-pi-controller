@@ -1,4 +1,5 @@
 from view import View
+from callback_signal import Signal
 
 class Button(View):
     """A button that can have an image.
@@ -10,6 +11,7 @@ class Button(View):
          View.__init__(self,frame)
 
          self.image = None
+         self.on_tapped = Signal()
 
          for key, value in kwargs.items():
              if key == 'image':
@@ -17,3 +19,6 @@ class Button(View):
     
     def draw (self):
         self.surface = self.image.surface
+
+    def mouse_up(self):
+        self.on_tapped(self)

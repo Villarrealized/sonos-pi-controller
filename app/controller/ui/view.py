@@ -16,7 +16,7 @@ class View:
         self.hidden = False
         self.background_color = None
 
-        self.on_touch_up = Signal()
+        self.on_mouse_up = Signal()
 
         self.layout()
 
@@ -59,9 +59,9 @@ class View:
         if self.parent is not None:
             self.parent.remove_child(self)
 
-    def touch_up(self, point):
-        print "Touched point: {}".format(point)
-        self.on_touch_up(self, point)
+    def mouse_up(self, point):
+        print "Mouse up on point: {}".format(point)
+        self.on_mouse_up(self, point)
 
     def hit(self, point):
         """Find the view under point given, if any."""
@@ -70,15 +70,18 @@ class View:
         
         # Use pygame collidepoint method for bounding box detection
         if not self.frame.collidepoint(point):
-            return None
+            return None        
 
-        local_point = (point[0] - self.frame.topleft[0], point[1] - self.frame.topleft[1])
+        #local_point = (point[0] - self.frame.topleft[0], point[1] - self.frame.topleft[1])
+
+        #print local_point
         
         # Walk through children, starting with top most layer
         for child in reversed(self.children):
-            hit_view = child.hit(local_point)
+            hit_view = child.hit(point)
             if hit_view is not None:
                 return hit_view
+        return self
         
 
 
