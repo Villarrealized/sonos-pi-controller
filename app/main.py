@@ -50,10 +50,13 @@ while True:
     for event in pygame.event.get():        
         if(event.type is MOUSEBUTTONUP):
             mouse_position = pygame.mouse.get_pos()
-            print (mouse_position) 
+            print ""
+            print ("Tap on window at: {}".format(mouse_position))
             hit_view = Window.scene.hit(mouse_position)
-            if hit_view is not None:
-                print "got a hit in a view"
+            if hit_view is not None and hit_view is not Window.scene:
+                from controller.ui.button import Button
+                if isinstance(hit_view, Button):
+                    print "Button!!!"
                 hit_view.mouse_up(mouse_position)
             # if playing:
             #     requests.post(API_URL + '/room/tv/pause')

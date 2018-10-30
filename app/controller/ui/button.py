@@ -20,5 +20,5 @@ class Button(View):
     def draw (self):
         self.surface = self.image.surface
 
-    def mouse_up(self):
+    def mouse_up(self, point):
         self.on_tapped(self)

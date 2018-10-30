@@ -72,9 +72,9 @@ class View:
         if not self.frame.collidepoint(point):
             return None        
 
-        #local_point = (point[0] - self.frame.topleft[0], point[1] - self.frame.topleft[1])
+        local_point = (point[0] - self.frame.topleft[0], point[1] - self.frame.topleft[1])
 
-        #print local_point
+        print "Local point: {}".format(local_point)
         
         # Walk through children, starting with top most layer
         for child in reversed(self.children):
