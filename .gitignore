@@ -1,2 +1,3 @@
 .env
 *.code-workspace
+*.pyc

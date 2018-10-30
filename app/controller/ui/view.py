@@ -1,5 +1,5 @@
 import pygame
-from signal import Signal
+from callback_signal import Signal
 
 class View:
     """A rectangular portion of the window.
@@ -60,7 +60,7 @@ class View:
             self.parent.remove_child(self)
 
     def touch_up(self, point):
-        print ("Touched point: %s", %s)
+        print "Touched point: {}".format(point)
         self.on_touch_up(self, point)
 
     def hit(self, point):
