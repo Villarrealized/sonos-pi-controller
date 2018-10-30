@@ -1,4 +1,5 @@
 import pygame
+from callback_signal import Signal
 
 class View:
     """A rectangular portion of the window.
@@ -13,8 +14,9 @@ class View:
         self.children = []
 
         self.hidden = False
-
         self.background_color = None
+
+        self.on_mouse_up = Signal()
 
         self.layout()
 
@@ -24,7 +26,7 @@ class View:
         Subclasses should invoke this after laying out child
         views and/or updating its own frame.
         """
-        
+
         self.surface = pygame.Surface(self.frame.size, pygame.SRCALPHA)
 
     def draw(self):
@@ -56,6 +58,32 @@ class View:
     def remove(self):
         if self.parent is not None:
             self.parent.remove_child(self)
+
+    def mouse_up(self, point):
+        print "Mouse up on point: {}".format(point)
+        self.on_mouse_up(self, point)
+
+    def hit(self, point):
+        """Find the view under point given, if any."""
+        if self.hidden:
+            return None
+        
+        # Use pygame collidepoint method for bounding box detection
+        if not self.frame.collidepoint(point):
+            return None        
+
+        local_point = (point[0] - self.frame.topleft[0], point[1] - self.frame.topleft[1])
+
+        print "Local point: {}".format(local_point)
+        
+        # Walk through children, starting with top most layer
+        for child in reversed(self.children):
+            hit_view = child.hit(point)
+            if hit_view is not None:
+                return hit_view
+        return self
+        
+
 
 
 

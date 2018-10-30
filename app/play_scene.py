@@ -11,4 +11,8 @@ class PlayScene(Scene):
 
         play_track_img = Image('play_track','play_track.png')
         button = Button(Rect(100,100,60,60),image=play_track_img)
-        self.add_child(button)  
+        button.on_tapped.connect(self.button_tapped)
+        self.add_child(button)
+
+    def button_tapped(self, button):
+        print "Button was tapped"
