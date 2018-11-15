@@ -71,7 +71,8 @@ class View:
         # Use pygame collidepoint method for bounding box detection
         if not self.frame.collidepoint(point):
             return None        
-
+        
+        # Find the local coordinates of tap 
         local_point = (point[0] - self.frame.topleft[0], point[1] - self.frame.topleft[1])
 
         print "Local point: {}".format(local_point)

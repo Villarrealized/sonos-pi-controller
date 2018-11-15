@@ -12,7 +12,7 @@ import controller.ui as ui
 from controller.ui.window import Window
 import color
 from controller.device.backlight import Backlight
-from play_scene import PlayScene
+from scenes.now_playing import NowPlaying
 
 # Environment Vars
 API_URL = os.getenv('API_URL')
@@ -41,21 +41,21 @@ signal(SIGTERM, exit_handler)
 ui.init()
 
 # Set the scene here
-play_scene = PlayScene()
-Window.scene = play_scene
+now_playing = NowPlaying()
+Window.scene = now_playing
 
 print ("entering main loop")
 while True:
     # Scan touchscreen events
     for event in pygame.event.get():
         mouse_position = pygame.mouse.get_pos()
-        print ""
-        print ("Tap on window at: {}".format(mouse_position))    
+        # print ""
+        # print ("Tap on window at: {}".format(mouse_position))    
         if(event.type is MOUSEBUTTONUP):
             pass
-            # hit_view = Window.scene.hit(mouse_position)
-            # if hit_view is not None and hit_view is not Window.scene:
-            #     hit_view.mouse_up(mouse_position)
+            hit_view = Window.scene.hit(mouse_position)
+            if hit_view is not None and hit_view is not Window.scene:
+                hit_view.mouse_up(mouse_position)
                 
             # if playing:
             #     requests.post(API_URL + '/room/tv/pause')
