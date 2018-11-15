@@ -23,13 +23,13 @@ def init():
     alarm(3)
     try:
         pygame.init()
-        Window.surface = pygame.display.set_mode()        
+        Window.surface = pygame.display.set_mode(Window.frame.size,pygame.FULLSCREEN)        
         alarm(0)
     except Alarm:
         raise KeyboardInterrupt
     ##################
     # Hide the mouse
-    pygame.mouse.set_visible(False) 
+    #pygame.mouse.set_visible(False) 
 
     # Turn on backlight
     Backlight.on()
