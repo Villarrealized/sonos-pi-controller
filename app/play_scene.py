@@ -10,9 +10,10 @@ class PlayScene(Scene):
         self.background_color = color.NAVY
 
         play_track_img = Image('play_track','play_track.png')
-        button = Button(Rect(100,100,60,60),image=play_track_img)
+        button = Button(Rect(130,210,60,60),image=play_track_img)
+        button.background_color = (255,0,0)
         button.on_tapped.connect(self.button_tapped)
-        self.add_child(button)
+        #self.add_child(button)
 
     def button_tapped(self, button):
         print "Button was tapped"
