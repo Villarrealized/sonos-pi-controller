@@ -19,6 +19,18 @@ class View:
         self.on_mouse_up = Signal()
 
         self.layout()
+    
+    @property
+    def width(self):
+        if self.surface is None: 
+            return None
+        return self.surface.get_width()
+
+    @property
+    def height(self):
+        if self.surface is None: 
+            return None
+        return self.surface.get_height()
 
     def layout(self):
         """Call to have the view layout itself.
@@ -30,19 +42,22 @@ class View:
         self.surface = pygame.Surface(self.frame.size, pygame.SRCALPHA)
 
     def draw(self):
-        if self.hidden:
+        """Do not call directly."""
+
+        if self.hidden:                        
             return False
             
         if self.background_color is not None:
             self.surface.fill(self.background_color)
 
         for child in self.children:
-            child.draw()
-            self.surface.blit(child.surface, child.frame.topleft)
+            if not child.hidden:
+                child.draw()
+                self.surface.blit(child.surface, child.frame.topleft)
 
     def center(self):
         if self.parent is not None:
-            self.frame.center = (self.parent.frame.w // 2, self.parent.frame.h //2)
+            self.frame.center = (self.parent.frame.w // 2, self.parent.frame.h // 2)
     
     def add_child(self, child):
         assert child is not None
@@ -60,7 +75,7 @@ class View:
             self.parent.remove_child(self)
 
     def mouse_up(self, point):
-        print "Mouse up on point: {}".format(point)
+        # print "Mouse up on point: {}".format(point)
         self.on_mouse_up(self, point)
 
     def hit(self, point):
@@ -75,7 +90,7 @@ class View:
         # Find the local coordinates of tap 
         local_point = (point[0] - self.frame.topleft[0], point[1] - self.frame.topleft[1])
 
-        print "Local point: {}".format(local_point)
+        # print "Local point: {}".format(local_point)
         
         # Walk through children, starting with top most layer
         for child in reversed(self.children):

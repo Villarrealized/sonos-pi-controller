@@ -29,7 +29,7 @@ def init():
         raise KeyboardInterrupt
     ##################
     # Hide the mouse
-    #pygame.mouse.set_visible(False) 
+    pygame.mouse.set_visible(False) 
 
     # Turn on backlight
     Backlight.on()

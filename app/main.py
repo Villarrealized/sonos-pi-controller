@@ -5,7 +5,6 @@ from time import sleep
 
 import pygame
 from pygame.locals import MOUSEBUTTONUP
-import requests
 
 # import project files
 import controller.ui as ui
@@ -13,12 +12,6 @@ from controller.ui.window import Window
 import color
 from controller.device.backlight import Backlight
 from scenes.now_playing import NowPlaying
-
-# Environment Vars
-API_URL = os.getenv('API_URL')
-
-# Global Vars
-playing = False
 
 # Handle Terminate signal, exit gracefully.
 def exit_handler(sig, frame):
@@ -55,14 +48,7 @@ while True:
             pass
             hit_view = Window.scene.hit(mouse_position)
             if hit_view is not None and hit_view is not Window.scene:
-                hit_view.mouse_up(mouse_position)
-                
-            # if playing:
-            #     requests.post(API_URL + '/room/tv/pause')
-            #     playing = False
-            # else:
-            #     requests.post(API_URL + '/room/tv/play')
-            #     playing = True                           
+                hit_view.mouse_up(mouse_position)                        
     Window.update()
 
     # Return time to CPU to not hog resources during loop
