@@ -6,6 +6,8 @@ from time import sleep
 import pygame
 from pygame.locals import MOUSEBUTTONUP
 
+from sonos import Sonos
+
 # import project files
 import controller.ui as ui
 from controller.ui.window import Window
@@ -33,8 +35,9 @@ signal(SIGTERM, exit_handler)
 # Initialize UI window
 ui.init()
 
+sonos = Sonos()
 # Set the scene here
-now_playing = NowPlaying()
+now_playing = NowPlaying(sonos)
 Window.scene = now_playing
 
 print ("entering main loop")

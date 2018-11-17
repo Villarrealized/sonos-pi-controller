@@ -4,9 +4,6 @@ from threading import Timer
 from threading import Thread
 
 from pygame import Rect
-import requests
-
-import soco
 
 from controller.ui.scene import Scene
 from controller.ui.image import Image
@@ -19,11 +16,11 @@ import color
 API_URL = os.getenv('API_URL')
 
 class NowPlaying(Scene):
-    def __init__(self):
-        Scene.__init__(self)        
-        self.rooms = requests.get(API_URL + '/rooms').json()
-        self.current_room = 'tvroom' #self.rooms[0]  
-        print(self.current_room)  
+    def __init__(self, sonos):
+        Scene.__init__(self)                        
+        self.sonos = sonos
+        self.sonos.current_zone = 'TV Room'     
+        print(self.sonos.current_zone)   
 
         self.background_color = color.NAVY             
         ##### Play Button #####
@@ -44,16 +41,13 @@ class NowPlaying(Scene):
         self.pause_button.on_tapped.connect(self.pause)
         self.add_child(self.pause_button)
 
-        
-
-
-    def play(self, button): 
+    def play(self, button):
         self.play_button.hidden = True
-        self.pause_button.hidden = False          
-        requests.post(API_URL + '/rooms/{}/play'.format(self.current_room))
+        self.pause_button.hidden = False
+        self.sonos.play()
 
     def pause(self, button):
         self.play_button.hidden = False
-        self.pause_button.hidden = True        
-        requests.post(API_URL + '/rooms/{}/pause'.format(self.current_room))
+        self.pause_button.hidden = True
+        self.sonos.pause()
        
