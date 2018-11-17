@@ -5,7 +5,8 @@ from threading import Thread
 
 from pygame import Rect
 import requests
-from socketIO_client import SocketIO
+
+import soco
 
 from controller.ui.scene import Scene
 from controller.ui.image import Image
@@ -19,8 +20,7 @@ API_URL = os.getenv('API_URL')
 
 class NowPlaying(Scene):
     def __init__(self):
-        Scene.__init__(self)
-        self._socketIO = SocketIO('192.168.0.225', 80)
+        Scene.__init__(self)        
         self.rooms = requests.get(API_URL + '/rooms').json()
         self.current_room = 'tvroom' #self.rooms[0]  
         print(self.current_room)  
@@ -44,27 +44,8 @@ class NowPlaying(Scene):
         self.pause_button.on_tapped.connect(self.pause)
         self.add_child(self.pause_button)
 
+        
 
-                       
-
-        self._socketIO.on('avTransportChange', self.avTransportChange)
-        thread = Thread(target=self._socketIO.wait)
-        thread.start()
-
-        self._socketIO.on('renderingControlChange', self.renderingControlChange)
-        thread = Thread(target=self._socketIO.wait)
-        thread.start()
-
-    def avTransportChange(self, data):
-        if data["transport_state"] == 'PLAYING':
-            self.play_button.hidden = True
-            self.pause_button.hidden = False
-        else:
-            self.play_button.hidden = False
-            self.pause_button.hidden = True
-
-    def renderingControlChange(self, data):        
-            print(data)
 
     def play(self, button): 
         self.play_button.hidden = True
