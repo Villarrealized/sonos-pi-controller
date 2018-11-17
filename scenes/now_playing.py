@@ -41,13 +41,30 @@ class NowPlaying(Scene):
         self.pause_button.on_tapped.connect(self.pause)
         self.add_child(self.pause_button)
 
+        self.sonos.listenForZoneChanges(self.zoneStateChanged)
+
+
     def play(self, button):
-        self.play_button.hidden = True
-        self.pause_button.hidden = False
+        # Technically, we don't need to call this here, but it helps with 
+        # the UI responsiveness, so we don't need to wait for the listener to respond
+        self.updatePlayPause('PLAYING')
         self.sonos.play()
 
     def pause(self, button):
-        self.play_button.hidden = False
-        self.pause_button.hidden = True
+        self.updatePlayPause('PAUSED_PLAYBACK')
         self.sonos.pause()
+
+    def updatePlayPause(self, state):        
+        if state == 'PLAYING':
+            self.play_button.hidden = True
+            self.pause_button.hidden = False
+        else:
+            self.play_button.hidden = False
+            self.pause_button.hidden = True
+
+    def zoneStateChanged(self, data):
+        '''Callback function that is called every time the zone state changes ex. new track, play, pause, volume change, etc.'''        
+        if 'transport_state' in data: self.updatePlayPause(data['transport_state'])
+
+        
        

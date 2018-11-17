@@ -1,9 +1,19 @@
+# Supress future warning for SoCo
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
+
 import soco
 from soco.events import event_listener
+
+from threading import Thread
 
 class Sonos(object):
     def __init__(self):        
         self._current_zone = None
+        self._zoneListenerThread = None
+        self._renderingControlSubscription = None        
+        self._avTransportSubscription = None
+        self._listeningForZoneChanges = False
 
 
     @property
@@ -29,6 +39,37 @@ class Sonos(object):
             self._current_zone.pause()
         else:
             print('Error: current_zone is not set')
+
+    
+    def listenForZoneChanges(self, callback):
+        self._listeningForZoneChanges = True
+        self._avTransportSubscription = self._current_zone.avTransport.subscribe()
+        self._renderingControlSubscription = self._current_zone.renderingControl.subscribe()
+
+        def listen():
+            while self._listeningForZoneChanges:
+                try:
+                    event = self._avTransportSubscription.events.get(timeout=0.5)                    
+                    callback(event.variables)
+                except:
+                    pass
+                try:
+                    event = self._renderingControlSubscription.events.get(timeout=0.5)
+                    callback(event.variables)
+                except:
+                    pass
+            
+            self._avTransportSubscription.unsubscribe()
+            self._renderingControlSubscription.unsubscribe()
+            event_listener.stop()
+            
+        self._zoneListenerThread = Thread(target=listen)
+        self._zoneListenerThread.start()
+
+    def stopListeningForZoneChanges(self, callback):
+        self._listeningForZoneChanges = False
+        self._zoneListenerThread.join()
+        callback()
 
     @staticmethod
     def getZoneNames():
