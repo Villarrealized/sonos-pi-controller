@@ -46,8 +46,13 @@ class NowPlaying(Scene):
 
 
         socketIO = SocketIO('192.168.0.225', 80)
-        def avTransportChange(msg):
-            print(msg)
+        def avTransportChange(data):
+            if data["transport_state"] == 'PLAYING':
+                self.play_button.hidden = True
+                self.pause_button.hidden = False
+            else:
+                self.play_button.hidden = False
+                self.pause_button.hidden = True
 
         def renderingControlChange(msg):
             print(msg)               
