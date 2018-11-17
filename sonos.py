@@ -25,7 +25,7 @@ class Sonos(object):
 
     @current_zone.setter
     def current_zone(self, zoneName):        
-        self._current_zone = Sonos._getZoneByName(zoneName)
+        self._current_zone = Sonos.get_zone_by_name(zoneName)
 
     
     def play(self):
@@ -39,12 +39,12 @@ class Sonos(object):
     def next(self):
         if self._current_zone is not None:
             self._current_zone.next()
-            
+
     def previous(self):
         if self._current_zone is not None:
                 self._current_zone.pause()
     
-    def listenForZoneChanges(self, callback):
+    def listen_for_zone_changes(self, callback):
         self._listeningForZoneChanges = True
         self._avTransportSubscription = self._current_zone.avTransport.subscribe()
         self._renderingControlSubscription = self._current_zone.renderingControl.subscribe()
@@ -69,13 +69,13 @@ class Sonos(object):
         self._zoneListenerThread = Thread(target=listen)
         self._zoneListenerThread.start()
 
-    def stopListeningForZoneChanges(self, callback):
+    def stop_listening_for_zone_changes(self, callback):
         self._listeningForZoneChanges = False
         self._zoneListenerThread.join()
         callback()
 
     @staticmethod
-    def getZoneNames():
+    def get_zone_names():
         zone_list = list(soco.discover())
         zone_names = []    
         for zone in zone_list:
@@ -84,7 +84,7 @@ class Sonos(object):
 
     ### Private Methods ###
     @staticmethod
-    def _getZoneByName(zoneName):
+    def get_zone_by_name(zoneName):
         '''Returns a SoCo instance if found, or None if not found'''
         zone_list = list(soco.discover())        
         for zone in zone_list:

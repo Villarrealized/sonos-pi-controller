@@ -20,7 +20,7 @@ class NowPlaying(Scene):
         self.sonos.current_zone = 'TV Room'     
         print("Current Zone: {}".format(self.sonos.current_zone))
         # Listen for all changes to the current zone   
-        self.sonos.listenForZoneChanges(self.zoneStateChanged)
+        self.sonos.listen_for_zone_changes(self.zone_state_changed)
 
         self.background_color = color.NAVY             
         ##### Play Button #####
@@ -43,32 +43,29 @@ class NowPlaying(Scene):
 
         ##### Previous Button #####
         previous_track_img = Image('previous_track','previous_track.png')
-        #Center bottom positioning
-        self.previous_button = Button(Rect(70,343,30,30),image=previous_track_img)   
+        previous_track_disabled_img = Image('previous_track_disabled','previous_track_disabled.png')        
+        self.previous_button = Button(Rect(65,340,40,40),image=previous_track_img, disabled_image=previous_track_disabled_img)
         #Touch Handler
         self.previous_button.on_tapped.connect(self.previous)
         self.add_child(self.previous_button)
 
         ##### Next Button #####
         next_track_img = Image('next_track','next_track.png')
-        #Center bottom positioning
-        self.next_button = Button(Rect(220,343,30,30),image=next_track_img)                
+        next_track_disabled_img = Image('next_track_disabled','next_track_disabled.png')        
+        self.next_button = Button(Rect(215,340,40,40),image=next_track_img,disabled_image=next_track_disabled_img)                
         #Touch Handler
         self.next_button.on_tapped.connect(self.next)
         self.add_child(self.next_button)
 
 
-        
-
-
-    def play(self, button):
+    def play(self, button):        
         # Technically, we don't need to call this here, but it helps with 
         # the UI responsiveness, so we don't need to wait for the listener to respond
-        self.updatePlayPause('PLAYING')
+        self.update_play_pause('PLAYING')
         self.sonos.play()
 
     def pause(self, button):
-        self.updatePlayPause('PAUSED_PLAYBACK')
+        self.update_play_pause('PAUSED_PLAYBACK')
         self.sonos.pause()
     
     def next(self, button):
@@ -77,7 +74,7 @@ class NowPlaying(Scene):
     def previous(self, button):
         self.sonos.previous()
 
-    def updatePlayPause(self, state):        
+    def update_play_pause(self, state):        
         if state == 'PLAYING':
             self.play_button.hidden = True
             self.pause_button.hidden = False
@@ -85,13 +82,18 @@ class NowPlaying(Scene):
             self.play_button.hidden = False
             self.pause_button.hidden = True
 
-    def zoneStateChanged(self, data):
-        print("")
-        pprint(data)
-        print("")
-        
+    def update_available_actions(self, actions):
+        self.next_button.enabled = 'Next' in actions
+        self.previous_button.enabled = 'Previous' in actions
+
+    def zone_state_changed(self, data):
         '''Callback function that is called every time the zone state changes ex. new track, play, pause, volume change, etc.'''        
-        if 'transport_state' in data: self.updatePlayPause(data['transport_state'])
+        # print("")
+        # pprint(data)
+        # print("")
+
+        if 'current_transport_actions' in data: self.update_available_actions(data['current_transport_actions'].split(', '))
+        if 'transport_state' in data: self.update_play_pause(data['transport_state'])
 
         
        

@@ -1,7 +1,7 @@
 import pygame
 from callback_signal import Signal
 
-class View:
+class View(object):
     """A rectangular portion of the window.
     Views may have zero or more child views contained within it. 
     """
@@ -14,6 +14,7 @@ class View:
         self.children = []
 
         self.hidden = False
+        self._enabled = True
         self.background_color = None
 
         self.on_mouse_up = Signal()
@@ -80,7 +81,7 @@ class View:
 
     def hit(self, point):
         """Find the view under point given, if any."""
-        if self.hidden:
+        if self.hidden or not self._enabled:
             return None
         
         # Use pygame collidepoint method for bounding box detection
@@ -95,7 +96,7 @@ class View:
         # Walk through children, starting with top most layer
         for child in reversed(self.children):
             hit_view = child.hit(point)
-            if hit_view is not None:
+            if hit_view is not None:                
                 return hit_view
         return self
         
