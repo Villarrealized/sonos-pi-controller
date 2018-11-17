@@ -44,8 +44,7 @@ while True:
         mouse_position = pygame.mouse.get_pos()
         # print ""
         # print ("Tap on window at: {}".format(mouse_position))    
-        if(event.type is MOUSEBUTTONUP):
-            pass
+        if(event.type is MOUSEBUTTONUP):                          
             hit_view = Window.scene.hit(mouse_position)
             if hit_view is not None and hit_view is not Window.scene:
                 hit_view.mouse_up(mouse_position)                        
