@@ -31,15 +31,18 @@ class Sonos(object):
     def play(self):
         if self._current_zone is not None:
             self._current_zone.play()
-        else:
-            print('Error: current_zone is not set')
     
     def pause(self):
         if self._current_zone is not None:
             self._current_zone.pause()
-        else:
-            print('Error: current_zone is not set')
 
+    def next(self):
+        if self._current_zone is not None:
+            self._current_zone.next()
+            
+    def previous(self):
+        if self._current_zone is not None:
+                self._current_zone.pause()
     
     def listenForZoneChanges(self, callback):
         self._listeningForZoneChanges = True
