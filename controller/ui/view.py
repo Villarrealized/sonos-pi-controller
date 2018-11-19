@@ -18,8 +18,6 @@ class View(object):
         self.background_color = None
 
         self.on_mouse_up = Signal()
-
-        #self.layout()
     
     @property
     def width(self):
@@ -54,7 +52,8 @@ class View(object):
         for child in self.children:
             if not child.hidden:
                 child.draw()
-                self.surface.blit(child.surface, child.frame.topleft)
+                if not child.surface.get_locked():
+                    self.surface.blit(child.surface, child.frame.topleft)
 
     def center(self):
         if self.parent is not None:
