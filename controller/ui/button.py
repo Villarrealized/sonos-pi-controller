@@ -22,6 +22,7 @@ class Button(View):
                 self.image = value
             if key == 'disabled_image':
                 self._disabled_image = value
+                
              
     @property
     def enabled(self):

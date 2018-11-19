@@ -19,7 +19,7 @@ class View(object):
 
         self.on_mouse_up = Signal()
 
-        self.layout()
+        #self.layout()
     
     @property
     def width(self):
@@ -45,7 +45,7 @@ class View(object):
     def draw(self):
         """Do not call directly."""
 
-        if self.hidden:                        
+        if self.hidden or self.surface is None:                        
             return False
             
         if self.background_color is not None:

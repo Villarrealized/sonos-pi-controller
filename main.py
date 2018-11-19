@@ -11,7 +11,7 @@ from sonos import Sonos
 # import project files
 import controller.ui as ui
 from controller.ui.window import Window
-import color
+import colors
 from controller.device.backlight import Backlight
 from scenes.now_playing import NowPlaying
 
@@ -19,7 +19,7 @@ from scenes.now_playing import NowPlaying
 def exit_handler(sig, frame):
     print ("Exiting app...")
     Window.scene = None
-    Window.surface.fill(color.BLACK)
+    Window.surface.fill(colors.BLACK)
     pygame.display.update()
 
     Backlight.off()

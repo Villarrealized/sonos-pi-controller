@@ -6,12 +6,9 @@ from pygame import Rect
 from controller.ui.scene import Scene
 from controller.ui.image import Image
 from controller.ui.button import Button
-from controller.ui.window import Window
-import color
+from controller.ui.label import Label
+import colors
 
-
-# Environment Vars
-API_URL = os.getenv('API_URL')
 
 class NowPlaying(Scene):
     def __init__(self, sonos):
@@ -22,7 +19,19 @@ class NowPlaying(Scene):
         # Listen for all changes to the current zone   
         self.sonos.listen_for_zone_changes(self.zone_state_changed)
 
-        self.background_color = color.NAVY             
+        self.firstLoad = True
+        self.background_color = colors.NAVY   
+
+        # Track Title   
+        self.track_label = Label(Rect(20,226,280,30),"",36, colors.WHITE)             
+        self.add_child(self.track_label)    
+        # Artist
+        self.artist_label = Label(Rect(20,266,280,20),"",24, colors.GRAY)             
+        self.add_child(self.artist_label)
+        # Album
+        self.album_label = Label(Rect(20,291,280,20),"",24, colors.GRAY)             
+        self.add_child(self.album_label)
+
         ##### Play Button #####
         play_track_img = Image('play_track','play_track.png')
         #Center bottom positioning
@@ -57,6 +66,18 @@ class NowPlaying(Scene):
         self.next_button.on_tapped.connect(self.next)
         self.add_child(self.next_button)
 
+        self.layout()
+
+
+        # Hide all children to start, will unhide when we load everything
+        for child in self.children:
+            pass
+            child.hidden = True
+
+    
+    def show_ui(self):
+        for child in self.children:
+            child.hidden = False
 
     def play(self, button):        
         # Technically, we don't need to call this here, but it helps with 
@@ -78,22 +99,36 @@ class NowPlaying(Scene):
         if state == 'PLAYING':
             self.play_button.hidden = True
             self.pause_button.hidden = False
-        elif state == 'PAUSED_PLAYBACK':
+        elif state == 'PAUSED_PLAYBACK' or state == 'STOPPED':
             self.play_button.hidden = False
             self.pause_button.hidden = True
 
     def update_available_actions(self, actions):
+        print(actions)
         self.next_button.enabled = 'Next' in actions
         self.previous_button.enabled = 'Previous' in actions
 
+    def update_track_info(self,track):
+        print(track['duration'])
+        print(track['position'])
+        print(track['album_art'])
+        self.track_label.text = track['title']
+        self.artist_label.text = track['artist']
+        self.album_label.text = track['album']
+
     def zone_state_changed(self, data):
         '''Callback function that is called every time the zone state changes ex. new track, play, pause, volume change, etc.'''        
-        print("")
-        pprint(data)
-        print("")
+        # print("")
+        # pprint(data)
+        # print("")
+
+        if self.firstLoad:  
+            self.show_ui()
+            self.firstLoad = False            
 
         if 'current_transport_actions' in data: self.update_available_actions(data['current_transport_actions'].split(', '))
         if 'transport_state' in data: self.update_play_pause(data['transport_state'])
+        if 'track' in data: self.update_track_info(data['track'])
 
         
        

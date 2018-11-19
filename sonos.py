@@ -52,7 +52,9 @@ class Sonos(object):
         def listen():
             while self._listeningForZoneChanges:
                 try:
-                    event = self._avTransportSubscription.events.get(timeout=0.5)                    
+                    event = self._avTransportSubscription.events.get(timeout=0.5)
+                    # Add in track info as well     
+                    event.variables['track'] = self._current_zone.get_current_track_info()       
                     callback(event.variables)
                 except:
                     pass
