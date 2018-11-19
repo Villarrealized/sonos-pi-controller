@@ -1,3 +1,25 @@
-FROM arm32v5/debian
-
+FROM arm32v7/debian:stretch
+# python3-pygame - package does not exist on this platform at the time, so we use python2.7 version
 RUN apt-get update && apt-get install -y python-pygame python-pip
+
+##### SDL 2.x and SDL 1.2.15-10 have issues with the touchscreen...must force SDL1.2
+##### otherwise touchscreen will provide wonky values
+
+# enable wheezy package sources
+RUN echo "deb http://ftp.debian.org/debian/ wheezy main" > /etc/apt/sources.list.d/wheezy.list
+
+# set wheezy as default package source
+RUN echo "APT::Default-release \"wheezy\";" > /etc/apt/apt.conf.d/10defaultRelease
+
+# set the priority for libsdl from wheezy higher
+RUN echo "Package: libsdl1.2debian\
+Pin: release n=jessie\
+Pin-Priority: -10\
+Package: libsdl1.2debian\
+Pin: release n=wheezy\
+Pin-Priority: 900\
+" > /etc/apt/preferences.d/libsdl
+
+# install
+RUN apt-get update
+RUN apt-get -y --allow-downgrades install libsdl1.2debian/wheezy

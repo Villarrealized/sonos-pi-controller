@@ -1,1 +1,1 @@
-python-dotenv
+soco

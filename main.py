@@ -1,59 +1,60 @@
-import pygame
-from pygame.locals import *
 import os
+from signal import signal, SIGINT, SIGTERM
+import sys
 from time import sleep
-from signal import alarm, signal, SIGALRM, SIGKILL
 
-lcd = None
-def init_Pygame():
-    global lcd
-    # this section is an unbelievable nasty hack - for some reason Pygame
-    # needs a keyboardinterrupt to initialise in some limited circs
-    class Alarm(Exception):
-        pass
-    def alarm_handler(signum, frame):
-        raise Alarm
-    signal(SIGALRM, alarm_handler)
-    alarm(3)
-    try:
-        pygame.init()
-        print "getting lcd"
-        lcd = pygame.display.set_mode() 
-        alarm(0)
-    except Alarm:
-        raise KeyboardInterrupt
+import pygame
+from pygame.locals import MOUSEBUTTONUP
 
-#Colours
-WHITE = (255,255,255)
+from sonos import Sonos
 
-init_Pygame()
+# import project files
+import controller.ui as ui
+from controller.ui.window import Window
+import colors
+from controller.device.backlight import Backlight
+from scenes.now_playing import NowPlaying
+
+# Handle Terminate signal, exit gracefully.
+def exit_handler(sig, frame):
+    print ("Exiting app...")
+    Window.scene = None
+    Window.surface.fill(colors.BLACK)
+    pygame.display.update()
+
+    Backlight.off()
+    pygame.quit()
+    sys.exit(0)
+
+# Register signals for when app is interrupted or terminated
+signal(SIGINT, exit_handler)
+signal(SIGTERM, exit_handler)
 
 
-pygame.mouse.set_visible(False)
-lcd.fill((0,0,0))
-pygame.display.update()
+########## MAIN LOOP ###########
+# Initialize UI window
+ui.init()
 
-font_big = pygame.font.Font(None, 50)
+sonos = Sonos()
+# Set the scene here
+now_playing = NowPlaying(sonos)
+Window.scene = now_playing
 
-touch_buttons = {'17 on':(80,60), '4 on':(240,60), '17 off':(80,180), '4 off':(240,180)}
-
-for k,v in touch_buttons.items():
-    text_surface = font_big.render('%s'%k, True, WHITE)
-    rect = text_surface.get_rect(center=v)
-    lcd.blit(text_surface, rect)
-
-pygame.display.update()
-
-print "entering main loop"
+print ("entering main loop")
 while True:
     # Scan touchscreen events
     for event in pygame.event.get():
-        if(event.type is MOUSEBUTTONDOWN):
-            print "Mouse Down"
-            pos = pygame.mouse.get_pos()
-            print pos
-        elif(event.type is MOUSEBUTTONUP):
-            print "Mouse Up"
-            pos = pygame.mouse.get_pos()
-            print pos
-    sleep(0.1)
+        mouse_position = pygame.mouse.get_pos()
+        # print ""
+        # print ("Tap on window at: {}".format(mouse_position))    
+        if(event.type is MOUSEBUTTONUP):                          
+            hit_view = Window.scene.hit(mouse_position)
+            if hit_view is not None and hit_view is not Window.scene:
+                hit_view.mouse_up(mouse_position)                        
+    Window.update()
+
+    # Return time to CPU to not hog resources during loop
+    sleep(0.02)
+
+
+    
