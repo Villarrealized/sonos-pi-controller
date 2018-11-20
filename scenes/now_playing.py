@@ -18,8 +18,7 @@ import colors
 class NowPlaying(Scene):
     def __init__(self, sonos):
         Scene.__init__(self)
-        self.sonos = sonos
-        self.sonos.current_zone = 'TV Room'        
+        self.sonos = sonos          
 
         # Listen for all changes to the current zone   
         self.sonos.listen_for_zone_changes(self.zone_state_changed)

@@ -1,3 +1,4 @@
 .env
 *.code-workspace
 *.pyc
+current_zone.sonos
