@@ -88,7 +88,8 @@ class Sonos(object):
                 try:
                     event = self._avTransportSubscription.events.get(timeout=0.5)
                     # Add in track info as well     
-                    event.variables['track'] = self._current_zone.get_current_track_info()       
+                    event.variables['track'] = self._current_zone.get_current_track_info()
+                    event.variables['tv_playing'] = int(self._current_zone.is_playing_tv)
                     callback(event.variables)
                 except:
                     pass

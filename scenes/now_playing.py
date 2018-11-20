@@ -40,6 +40,7 @@ class NowPlaying(Scene):
 
         # Album Art
         self.empty_album_image = Image('empty_album',filename='empty_album_art.png')
+        self.tv_album_image = Image('tv_album_art',filename='tv_album_art.png')
         self.album_art_view = ImageView(Rect(80,72,160,160),self.empty_album_image)
         self.add_child(self.album_art_view)
 
@@ -55,7 +56,8 @@ class NowPlaying(Scene):
 
         ##### Play Button #####
         play_track_img = Image('play_track',filename='play_track.png')
-        self.play_button = Button(Rect(130,360,60,60),image=play_track_img)
+        play_track_disabled_img = Image('play_track_disabled',filename='play_track_disabled.png')
+        self.play_button = Button(Rect(130,360,60,60),image=play_track_img, disabled_image=play_track_disabled_img)
         #Touch Handler
         self.play_button.on_tapped.connect(self.play)
         self.add_child(self.play_button)
@@ -189,7 +191,7 @@ class NowPlaying(Scene):
     def update_volume_label(self, volume):        
         self.volume_label.text = str(volume) + "%"
 
-    def update_play_pause(self, state):        
+    def update_play_pause(self, state):    
         if state == 'PLAYING':
             self.play_button.hidden = True
             self.pause_button.hidden = False
@@ -197,38 +199,52 @@ class NowPlaying(Scene):
             self.play_button.hidden = False
             self.pause_button.hidden = True
 
-    def update_available_actions(self, actions):        
+    def update_available_actions(self, actions):    
         self.next_button.enabled = 'Next' in actions
         self.previous_button.enabled = 'Previous' in actions
+        self.play_button.enabled = 'Play' in actions
 
-    def update_track_info(self,track):
+    def update_track_info(self, track, tv_playing):
         # print('Duration: {}'.format(track['duration']))
-        # print('Position: {}'.format(track['position']))
+        # print('Position: {}'.format(track['position']))        
 
         self.track_label.text = track['title']
         self.artist_label.text = track['artist']
         self.album_label.text = track['album']
+
+        if tv_playing:
+            self.play_button.enabled = False
+            self.update_play_pause('PAUSED_PLAYBACK')    
 
         # Only set the image if it has changed
         if self.album_art_view.image.name != self.album_label.text:
             # Set album art to the url given if it is not empty, otherwise use the default image
             if track['album_art'].strip() != "":
                 self.album_art_view.image = Image(self.album_label.text,image_url=track['album_art'])
+            elif tv_playing:
+                self.album_art_view.image = self.tv_album_image
             else:
                 self.album_art_view.image = self.empty_album_image
+                        
+
+
 
     def zone_state_changed(self, data):
         '''Callback function that is called every time the zone state changes ex. new track, play, pause, volume change, etc.'''        
         # print("")
         # pprint(data)
-        # print("")
+        # print("")                
 
-        # Handle all the changed data
+        ###### Handle all the changed data #####
+
+        # avTransport data
         if 'current_transport_actions' in data: self.update_available_actions(data['current_transport_actions'].split(', '))
         if 'transport_state' in data: self.update_play_pause(data['transport_state'])
-        if 'track' in data: self.update_track_info(data['track'])
+        if 'track' in data: self.update_track_info(data['track'], data['tv_playing'])
+
+        # Rendering Controls       
         if 'mute' in data: self.update_volume_state(int(data['mute']['Master']))
-        if 'volume' in data: self.update_volume_label(int(data['volume']['Master']))
+        if 'volume' in data: self.update_volume_label(int(data['volume']['Master']))             
         
         # Reveal UI after we have loaded the data for the first time
         if self.firstLoad:
