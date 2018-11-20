@@ -8,12 +8,17 @@ from soco.events import event_listener
 from threading import Thread
 
 class Sonos(object):
+
+    # The amount the volume is changed
+    # each time it is increased or decreased
+    VOLUME_CHANGE = 2
+
     def __init__(self):        
         self._current_zone = None
         self._zoneListenerThread = None
         self._renderingControlSubscription = None        
         self._avTransportSubscription = None
-        self._listeningForZoneChanges = False
+        self._listeningForZoneChanges = False        
 
 
     @property
@@ -24,8 +29,37 @@ class Sonos(object):
         return None
 
     @current_zone.setter
-    def current_zone(self, zoneName):        
-        self._current_zone = Sonos.get_zone_by_name(zoneName)
+    def current_zone(self, zoneName):
+        if self._current_zone is not None and self._current_zone.player_name != zoneName:
+            # Stop listening for zone changes first
+            self.stop_listening_for_zone_changes()
+            # Change zone
+            self._current_zone = Sonos.get_zone_by_name(zoneName)
+        else:
+            # Change zone
+            self._current_zone = Sonos.get_zone_by_name(zoneName)
+        
+
+    
+    @property
+    def mute(self):
+        if self._current_zone is not None:
+            return self._current_zone.mute
+
+    @mute.setter
+    def mute(self, mute):
+        if self._current_zone is not None:
+            self._current_zone.mute = mute
+
+    @property
+    def volume(self):
+        if self._current_zone is not None:
+            return self._current_zone.volume
+
+    @volume.setter
+    def volume(self, volume):
+        if self._current_zone is not None:
+            self._current_zone.volume = volume
 
     
     def play(self):
@@ -71,10 +105,10 @@ class Sonos(object):
         self._zoneListenerThread = Thread(target=listen)
         self._zoneListenerThread.start()
 
-    def stop_listening_for_zone_changes(self, callback):
+    def stop_listening_for_zone_changes(self, callback=None):
         self._listeningForZoneChanges = False
-        self._zoneListenerThread.join()
-        callback()
+        if self._zoneListenerThread is not None: self._zoneListenerThread.join()
+        if callback: callback()        
 
     @staticmethod
     def get_zone_names():
@@ -82,7 +116,7 @@ class Sonos(object):
         zone_names = []    
         for zone in zone_list:
             zone_names.append(zone.player_name)
-        return zone_names
+        return sorted(zone_names)
 
     ### Private Methods ###
     @staticmethod

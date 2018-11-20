@@ -4,7 +4,7 @@ import sys
 from time import sleep
 
 import pygame
-from pygame.locals import MOUSEBUTTONUP
+from pygame.locals import MOUSEBUTTONUP, MOUSEMOTION
 
 from sonos import Sonos
 
@@ -47,10 +47,10 @@ while True:
         mouse_position = pygame.mouse.get_pos()
         # print ""
         # print ("Tap on window at: {}".format(mouse_position))    
-        if(event.type is MOUSEBUTTONUP):                          
-            hit_view = Window.scene.hit(mouse_position)
+        hit_view = Window.scene.hit(mouse_position)        
+        if event.type is MOUSEBUTTONUP:              
             if hit_view is not None and hit_view is not Window.scene:
-                hit_view.mouse_up(mouse_position)                        
+                hit_view.mouse_up(mouse_position)
     Window.update()
 
     # Return time to CPU to not hog resources during loop
