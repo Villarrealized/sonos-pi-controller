@@ -219,9 +219,9 @@ class NowPlaying(Scene):
 
     def zone_state_changed(self, data):
         '''Callback function that is called every time the zone state changes ex. new track, play, pause, volume change, etc.'''        
-        print("")
-        pprint(data)
-        print("")
+        # print("")
+        # pprint(data)
+        # print("")
 
         # Handle all the changed data
         if 'current_transport_actions' in data: self.update_available_actions(data['current_transport_actions'].split(', '))
