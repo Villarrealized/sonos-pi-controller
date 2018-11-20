@@ -212,28 +212,28 @@ class NowPlaying(Scene):
         # Only set the image if it has changed
         if self.album_art_view.image.name != self.album_label.text:
             # Set album art to the url given if it is not empty, otherwise use the default image
-            if track['album_art'].strip() != "":                     
-                self.album_art_view.image = Image(self.album_label.text,image_url=track['album_art'])            
+            if track['album_art'].strip() != "":
+                self.album_art_view.image = Image(self.album_label.text,image_url=track['album_art'])
             else:
-                self.album_art_view.image = self.empty_album_image        
+                self.album_art_view.image = self.empty_album_image
 
     def zone_state_changed(self, data):
         '''Callback function that is called every time the zone state changes ex. new track, play, pause, volume change, etc.'''        
-        # print("")
-        # pprint(data)
-        # print("")                        
+        print("")
+        pprint(data)
+        print("")
 
         # Handle all the changed data
         if 'current_transport_actions' in data: self.update_available_actions(data['current_transport_actions'].split(', '))
         if 'transport_state' in data: self.update_play_pause(data['transport_state'])
         if 'track' in data: self.update_track_info(data['track'])
-        if 'mute' in data: self.update_volume_state(int(data['mute']['Master']))        
-        if 'volume' in data: self.update_volume_label(int(data['volume']['Master']))        
+        if 'mute' in data: self.update_volume_state(int(data['mute']['Master']))
+        if 'volume' in data: self.update_volume_label(int(data['volume']['Master']))
         
         # Reveal UI after we have loaded the data for the first time
-        if self.firstLoad:  
+        if self.firstLoad:
             self.hidden = False
-            self.firstLoad = False  
+            self.firstLoad = False
 
         
        
