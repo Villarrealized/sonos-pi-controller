@@ -88,7 +88,7 @@ class View(object):
             return None        
         
         # Find the local coordinates of tap 
-        local_point = (point[0] - self.frame.topleft[0], point[1] - self.frame.topleft[1])
+        #local_point = (point[0] - self.frame.topleft[0], point[1] - self.frame.topleft[1])
 
         # print "Local point: {}".format(local_point)
         

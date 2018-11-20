@@ -8,6 +8,7 @@ from controller.ui.image import Image
 from controller.ui.button import Button
 from controller.ui.label import Label
 from controller.ui.image_view import ImageView
+
 import colors
 
 
@@ -53,9 +54,7 @@ class NowPlaying(Scene):
         ##### Pause Button #####
         pause_track_img = Image('pause_track',filename='pause_track.png')
         #Center bottom positioning
-        self.pause_button = Button(Rect(130,360,60,60),image=pause_track_img)
-        #Hide to start
-        self.pause_button.hidden = True        
+        self.pause_button = Button(Rect(130,360,60,60),image=pause_track_img)   
         #Touch Handler
         self.pause_button.on_tapped.connect(self.pause)
         self.add_child(self.pause_button)
@@ -76,14 +75,35 @@ class NowPlaying(Scene):
         self.next_button.on_tapped.connect(self.next)
         self.add_child(self.next_button)
 
-        self.layout()
 
+        ##### Volume Down Button #####
+        volume_down_img = Image('volume_down',filename='volume_down.png')    
+        self.volume_down_button = Button(Rect(92,438,30,30),image=volume_down_img)                
+        #Touch Handler
+        self.volume_down_button.on_tapped.connect(self.volume_down)
+        self.add_child(self.volume_down_button)
+
+        ##### Volume On Button #####
+        volume_on_img = Image('volume_on',filename='volume_on.png')    
+        self.volume_on_button = Button(Rect(147,440,26,26),image=volume_on_img)                
+        #Touch Handler
+        self.volume_on_button.on_tapped.connect(self.mute)
+        self.add_child(self.volume_on_button)
+
+        ##### Volume Up Button #####
+        volume_up_img = Image('volume_up',filename='volume_up.png')    
+        self.volume_up_button = Button(Rect(197,438,30,30),image=volume_up_img)                
+        #Touch Handler
+        self.volume_up_button.on_tapped.connect(self.volume_up)
+        self.add_child(self.volume_up_button)
+
+        # Layout the scene
+        self.layout()
 
         # Hide all children to start, will unhide when we load everything
         for child in self.children:            
-            child.hidden = True
+            child.hidden = True            
 
-    
     def show_ui(self):
         for child in self.children:
             child.hidden = False
@@ -103,6 +123,15 @@ class NowPlaying(Scene):
 
     def previous(self, button):
         self.sonos.previous()
+
+    def volume_down(self, button):
+        print('volume down')
+        
+    def volume_up(self, button):
+        print('volume up')
+
+    def mute(self, button):
+        print('mute pressed')
 
     def update_play_pause(self, state):        
         if state == 'PLAYING':
