@@ -86,6 +86,11 @@ class Sonos(object):
         if self._current_zone is not None:
             self._current_zone.mute = mute
 
+            # update group mute, if applicable
+            for member in self.group_members:
+                zone = Sonos.get_zone_by_name(member)
+                zone.mute = mute
+
     @property
     def volume(self):
         if self._current_zone is not None:
