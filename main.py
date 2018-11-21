@@ -2,9 +2,10 @@ import os
 from signal import signal, SIGINT, SIGTERM
 import sys
 from time import sleep
+from threading import Timer
 
 import pygame
-from pygame.locals import MOUSEBUTTONUP, MOUSEMOTION
+from pygame.locals import MOUSEBUTTONUP
 
 from sonos import Sonos
 
@@ -40,17 +41,36 @@ sonos = Sonos()
 now_playing = NowPlaying(sonos)
 Window.scene = now_playing
 
-print ("entering main loop")
-while True:
+BACKLIGHT_TIMEOUT = int(os.getenv('BACKLIGHT_TIMEOUT'))
+backlight_timer = Timer(BACKLIGHT_TIMEOUT, Backlight.off)
+backlight_timer.start()
+
+while True:    
     # Scan touchscreen events
     for event in pygame.event.get():
-        mouse_position = pygame.mouse.get_pos()
+        mouse_position = pygame.mouse.get_pos()        
+
         # print ""
         # print ("Tap on window at: {}".format(mouse_position))    
-        hit_view = Window.scene.hit(mouse_position)        
-        if event.type is MOUSEBUTTONUP:              
-            if hit_view is not None and hit_view is not Window.scene:
-                hit_view.mouse_up(mouse_position)
+        if Backlight.enabled:
+            # Cancel the timer any time the screen is touched        
+            backlight_timer.cancel()
+
+            # Process touch events
+            hit_view = Window.scene.hit(mouse_position)        
+            if event.type is MOUSEBUTTONUP:          
+                if hit_view is not None and hit_view is not Window.scene:
+                    hit_view.mouse_up(mouse_position)
+                
+                # Start backlight timer
+                if not backlight_timer.is_alive():                    
+                    backlight_timer = Timer(BACKLIGHT_TIMEOUT, Backlight.off)
+                    backlight_timer.start()        
+        else:            
+            # Turn the backlight on if the screen has been touched
+            Backlight.on()
+                   
+
     Window.update()
 
     # Return time to CPU to not hog resources during loop

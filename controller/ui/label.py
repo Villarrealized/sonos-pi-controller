@@ -4,14 +4,17 @@ from pygame.font import Font
 from view import View
 import colors
 
-CENTER=0
-
 class Label(View):
-    def __init__(self, frame, text, font_size=18, color=colors.WHITE, halign=CENTER):
+
+    CENTER=0
+    LEFT=1
+
+    def __init__(self, frame, text, font_size=18, color=colors.WHITE, halign=0, valign=0):
         View.__init__(self, frame)
 
         self.font = Font(None, font_size)
-        self.halign = CENTER
+        self.halign = halign
+        self.valign = valign
         self._text = text
         self._enabled = False
         self.color = color        
@@ -44,15 +47,19 @@ class Label(View):
     def _render_line(self, line_text):
         line_text = line_text.strip()     
         # Create a transparent background
-        self.surface = pygame.Surface(self.frame.size, pygame.SRCALPHA, 32)
-        self.surface.convert_alpha()
+        self.surface = pygame.Surface(self.frame.size, pygame.SRCALPHA, 32).convert_alpha()        
         # Add the text
         self.text_surface = self.font.render(line_text, True, self.color)
 
         text_position = (0,0)
         text_width = self.text_surface.get_size()[0]
-        if self.halign == CENTER:            
+        text_height = self.text_surface.get_size()[1]
+        if self.halign == self.CENTER:            
             text_position = ((self.frame.width - text_width) // 2, 0)
+        elif self.halign == self.LEFT and self.valign == self.CENTER:
+            text_position = (0, (self.frame.height - text_height) //2)
+
+        
 
         # Make sure the beginning of the text can be seen 
         # if the width is too big for the screen

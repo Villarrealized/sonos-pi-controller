@@ -11,6 +11,7 @@ from controller.ui.button import Button
 from controller.ui.label import Label
 from controller.ui.image_view import ImageView
 from scenes.select_room import SelectRoom
+from scenes.group_rooms import GroupRooms
 
 import colors
 
@@ -18,28 +19,27 @@ import colors
 class NowPlaying(Scene):
     def __init__(self, sonos):
         Scene.__init__(self)
-        self.sonos = sonos
-        self.sonos.current_zone = 'TV Room'        
-
-        # Listen for all changes to the current zone   
-        self.sonos.listen_for_zone_changes(self.zone_state_changed)
-
+        self.sonos = sonos                  
         self.firstLoad = True
+
+        ########## SETUP UI ##########
+
         self.background_color = colors.NAVY
 
         # Current Room   
-        self.room_label = Label(Rect(50,24,220,30),self.sonos.current_zone,30,colors.WHITE)
+        self.room_label = Label(Rect(50,24,220,30),self.sonos.current_zone_label,30,colors.WHITE)
         self.add_child(self.room_label)
 
         # Select Room
         select_room_image = Image('select_room',filename='select_room.png')
         self.select_room_button = Button(Rect(270,20,30,30),image=select_room_image)
         #Touch Handler
-        self.select_room_button.on_tapped.connect(self.select_room)
+        self.select_room_button.on_tapped.connect(self.select_room_modal)
         self.add_child(self.select_room_button)
 
         # Album Art
         self.empty_album_image = Image('empty_album',filename='empty_album_art.png')
+        self.tv_album_image = Image('tv_album_art',filename='tv_album_art.png')
         self.album_art_view = ImageView(Rect(80,72,160,160),self.empty_album_image)
         self.add_child(self.album_art_view)
 
@@ -55,7 +55,8 @@ class NowPlaying(Scene):
 
         ##### Play Button #####
         play_track_img = Image('play_track',filename='play_track.png')
-        self.play_button = Button(Rect(130,360,60,60),image=play_track_img)
+        play_track_disabled_img = Image('play_track_disabled',filename='play_track_disabled.png')
+        self.play_button = Button(Rect(130,360,60,60),image=play_track_img, disabled_image=play_track_disabled_img)
         #Touch Handler
         self.play_button.on_tapped.connect(self.play)
         self.add_child(self.play_button)
@@ -117,11 +118,23 @@ class NowPlaying(Scene):
         self.volume_up_button.on_tapped.connect(self.volume_up)
         self.add_child(self.volume_up_button)
 
+        ##### Group Rooms Button #####
+        group_rooms_img = Image('group_rooms',filename='group_rooms.png')
+        self.group_rooms_button = Button(Rect(270,440,26,26),image=group_rooms_img)
+        #Touch Handler
+        self.group_rooms_button.on_tapped.connect(self.group_rooms_modal)
+        self.add_child(self.group_rooms_button)        
+
         # Layout the scene
         self.layout()
 
         # Keep hidden until everything has loaded
         self.hidden = True
+
+        ########## END SETUP UI ##########
+
+        # Listen for all changes to the current zone   
+        self.sonos.listen_for_zone_changes(self.zone_state_changed)
                      
 
     
@@ -159,24 +172,42 @@ class NowPlaying(Scene):
     def unmute(self, button):
         self.update_volume_state(0)
         self.sonos.mute = 0
-
-    def select_room(self, button):
-        # Modal
-        self.selectRoomScene = SelectRoom(self.sonos)        
-        self.add_child(self.selectRoomScene)             
-
     ##### End Button Handlers #####
 
-    def change_room(self, room):
+    ##### Modals #####
+    def select_room_modal(self, button):        
+        self.selectRoomScene = SelectRoom(self.sonos)        
+        self.add_child(self.selectRoomScene)    
+
+    def group_rooms_modal(self, button):
+        self.groupRoomScene = GroupRooms(self.sonos)
+        self.add_child(self.groupRoomScene)
+
+    ##### End Modals #####
+
+    def group_rooms(self, rooms):
+        self.sonos.group(rooms)        
+        
+    def select_room(self, room):
         if self.sonos.current_zone != room:
             self.sonos.current_zone = room
-            self.room_label.text = room
+            self.room_label.text = self.sonos.current_zone_label
             # Subscribe to new zone changes
             self.sonos.listen_for_zone_changes(self.zone_state_changed)
 
     def show_ui(self):
         for child in self.children:
             child.hidden = False
+
+    def update_group_data(self, room_text):
+        if room_text is not None:
+            self.room_label.text = room_text
+        
+        # Check to see if we are still the coordinator of the group,
+        # otherwise we need to switch zones
+        if not self.sonos.is_coordinator:
+            print('you are not the coordinator')
+            self.sonos.update_zone_to_coordinator()
 
     def update_volume_state(self, mute):
         if mute:
@@ -189,7 +220,7 @@ class NowPlaying(Scene):
     def update_volume_label(self, volume):        
         self.volume_label.text = str(volume) + "%"
 
-    def update_play_pause(self, state):        
+    def update_play_pause(self, state):    
         if state == 'PLAYING':
             self.play_button.hidden = True
             self.pause_button.hidden = False
@@ -197,43 +228,57 @@ class NowPlaying(Scene):
             self.play_button.hidden = False
             self.pause_button.hidden = True
 
-    def update_available_actions(self, actions):        
+    def update_available_actions(self, actions):         
         self.next_button.enabled = 'Next' in actions
         self.previous_button.enabled = 'Previous' in actions
+        self.play_button.enabled = 'Play' in actions
 
-    def update_track_info(self,track):
-        # print('Duration: {}'.format(track['duration']))
-        # print('Position: {}'.format(track['position']))
-
+    def update_track_info(self, track, tv_playing):
         self.track_label.text = track['title']
         self.artist_label.text = track['artist']
         self.album_label.text = track['album']
 
+        if tv_playing:
+            self.play_button.enabled = False
+            self.update_play_pause('PAUSED_PLAYBACK')    
+
         # Only set the image if it has changed
         if self.album_art_view.image.name != self.album_label.text:
             # Set album art to the url given if it is not empty, otherwise use the default image
-            if track['album_art'].strip() != "":                     
-                self.album_art_view.image = Image(self.album_label.text,image_url=track['album_art'])            
+            if track['album_art'].strip() != "":
+                self.album_art_view.image = Image(self.album_label.text,image_url=track['album_art'])
+            elif tv_playing:
+                self.album_art_view.image = self.tv_album_image
             else:
-                self.album_art_view.image = self.empty_album_image        
+                self.album_art_view.image = self.empty_album_image
+                        
+
+
 
     def zone_state_changed(self, data):
         '''Callback function that is called every time the zone state changes ex. new track, play, pause, volume change, etc.'''        
         # print("")
         # pprint(data)
-        # print("")                        
+        # print("")          
 
-        # Handle all the changed data
+        ###### Handle all the changed data #####
+
+        # avTransport data
         if 'current_transport_actions' in data: self.update_available_actions(data['current_transport_actions'].split(', '))
         if 'transport_state' in data: self.update_play_pause(data['transport_state'])
-        if 'track' in data: self.update_track_info(data['track'])
-        if 'mute' in data: self.update_volume_state(int(data['mute']['Master']))        
-        if 'volume' in data: self.update_volume_label(int(data['volume']['Master']))        
+        if 'track' in data: self.update_track_info(data['track'], data['tv_playing'])
+
+        # Rendering Controls       
+        if 'mute' in data: self.update_volume_state(int(data['mute']['Master']))
+        if 'volume' in data: self.update_volume_label(int(data['volume']['Master']))   
+
+        # Zone Group Topology Data
+        if 'zone_group_name' in data: self.update_group_data(data['zone_group_name'])        
         
         # Reveal UI after we have loaded the data for the first time
-        if self.firstLoad:  
+        if self.firstLoad:
             self.hidden = False
-            self.firstLoad = False  
+            self.firstLoad = False
 
         
        

@@ -17,10 +17,10 @@ class SelectRoom(Scene):
         Scene.__init__(self)
 
         self.background_color = colors.MODAL
-        self.generate_room_list()
+        self.generate_room_list()        
 
         # Rooms label   
-        self.room_label = Label(Rect(50,20,220,40),"Rooms",40,colors.WHITE)
+        self.room_label = Label(Rect(20,20,280,40),"Rooms",40,colors.WHITE)
         self.add_child(self.room_label)
 
         ##### Close Button #####
@@ -33,17 +33,27 @@ class SelectRoom(Scene):
 
 
     def change_room(self, button):        
-        self.parent.change_room(button.label.text)
+        # Get the first room, because it is the coordinator
+        self.parent.select_room(button.label.text.split(',')[0])
         self.remove()
 
     def close(self, button):
         self.remove()
 
     def generate_room_list(self):
+        ''' Generates a list of rooms/zones
+
+        If a room is a zone coordinator and has members in its group,
+        it will be displayed first with all its members appended to it
+        with commas'''
         y = 80
-        for room in Sonos.get_zone_names():
-            room_button = Button(Rect(80,y,160,40), 30, text=room)
-            room_button.on_tapped.connect(self.change_room)
-            self.add_child(room_button)
-            y += 60
+        for zone in Sonos.get_zone_groups():
+            if zone["is_coordinator"]:
+                button_text = zone["name"]
+                for member in zone["members"]:
+                    button_text += ", {}".format(member)
+                room_button = Button(Rect(20,y,280,40), 30, text=button_text)
+                room_button.on_tapped.connect(self.change_room)
+                self.add_child(room_button)
+                y += 60
           
