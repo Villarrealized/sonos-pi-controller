@@ -189,7 +189,7 @@ class Sonos(object):
         def listen():
             while self._listeningForZoneChanges:                
                 try:
-                    event = self._avTransportSubscription.events.get(timeout=0.5)
+                    event = self._avTransportSubscription.events.get(timeout=0.1)
                     # Add in track info as well     
                     event.variables['track'] = self._current_zone.get_current_track_info()
                     event.variables['tv_playing'] = int(self._current_zone.is_playing_tv)
@@ -197,12 +197,12 @@ class Sonos(object):
                 except:
                     pass
                 try:
-                    event = self._renderingControlSubscription.events.get(timeout=0.5)
+                    event = self._renderingControlSubscription.events.get(timeout=0.1)
                     callback(event.variables)
                 except:
                     pass
                 try:
-                    event = self._zoneGroupTopologySubscription.events.get(timeout=0.5)
+                    event = self._zoneGroupTopologySubscription.events.get(timeout=0.1)
                     callback(event.variables)
                 except:
                     pass
