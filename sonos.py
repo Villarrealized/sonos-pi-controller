@@ -95,7 +95,7 @@ class Sonos(object):
 
     @property
     def group_members(self):
-        ''' Return a sorted list of group member names or None '''
+        ''' Return a sorted list of unique group member names or None '''
         if self._current_zone is not None:
             unique_members = set()
             for member in self._current_zone.group.members:
@@ -103,6 +103,18 @@ class Sonos(object):
                     unique_members.add(member.player_name)
                         
             return sorted(unique_members)
+        return None
+
+    @property
+    def potential_members(self):
+        ''' Return a sorted list of zones that COULD be or ARE a member '''
+        if self._current_zone is not None:
+            zones = Sonos.get_zone_names()
+            # Remove this zone -- can't be a member of yourself
+            zones.remove(self.current_zone)
+
+            return zones
+
         return None
 
     @property
@@ -140,7 +152,7 @@ class Sonos(object):
         self._zoneGroupTopologySubscription = self._current_zone.zoneGroupTopology.subscribe()    
 
         def listen():
-            while self._listeningForZoneChanges:
+            while self._listeningForZoneChanges:                
                 try:
                     event = self._avTransportSubscription.events.get(timeout=0.5)
                     # Add in track info as well     

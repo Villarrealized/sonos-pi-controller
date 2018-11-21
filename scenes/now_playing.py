@@ -11,6 +11,7 @@ from controller.ui.button import Button
 from controller.ui.label import Label
 from controller.ui.image_view import ImageView
 from scenes.select_room import SelectRoom
+from scenes.group_rooms import GroupRooms
 
 import colors
 
@@ -18,12 +19,11 @@ import colors
 class NowPlaying(Scene):
     def __init__(self, sonos):
         Scene.__init__(self)
-        self.sonos = sonos          
-
-        # Listen for all changes to the current zone   
-        self.sonos.listen_for_zone_changes(self.zone_state_changed)
-
+        self.sonos = sonos                  
         self.firstLoad = True
+
+        ########## SETUP UI ##########
+
         self.background_color = colors.NAVY
 
         # Current Room   
@@ -130,6 +130,11 @@ class NowPlaying(Scene):
 
         # Keep hidden until everything has loaded
         self.hidden = True
+
+        ########## END SETUP UI ##########
+
+        # Listen for all changes to the current zone   
+        self.sonos.listen_for_zone_changes(self.zone_state_changed)
                      
 
     
@@ -175,7 +180,8 @@ class NowPlaying(Scene):
         self.add_child(self.selectRoomScene)    
 
     def group_rooms(self, button):
-        print('group rooms')
+        self.groupRoomScene = GroupRooms(self.sonos)
+        self.add_child(self.groupRoomScene)
 
     ##### End Modals #####
 
