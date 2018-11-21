@@ -47,9 +47,10 @@ class Sonos(object):
     def current_zone(self):
         if self._current_zone is None:                                     
             # Try to load zone from setting file
-            zone = self.read_current_zone_file()
-            if zone is not None and zone.strip() != '':
-                self._current_zone = Sonos.get_zone_by_name(zone)                          
+            zone = self.read_current_zone_file()            
+            match = Sonos.get_zone_by_name(zone)            
+            if match is not None:                                
+                self._current_zone = match            
             else:
                 # Set it to a random zone
                 self.current_zone = soco.discover().pop().player_name          
@@ -58,6 +59,7 @@ class Sonos(object):
 
     @current_zone.setter
     def current_zone(self, zoneName):
+        print(zoneName)
         if zoneName is None or zoneName.strip() == '':
             # Set it to a random zone
             self._current_zone = soco.discover().pop()  
@@ -67,7 +69,7 @@ class Sonos(object):
             # Change zone
             self._current_zone = Sonos.get_zone_by_name(zoneName)
         else:
-            return  
+            self._current_zone = Sonos.get_zone_by_name(zoneName)
 
         self.update_current_zone_file()        
 
