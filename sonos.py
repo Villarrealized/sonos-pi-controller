@@ -22,11 +22,11 @@ class Sonos(object):
         self._zoneListenerThread = None
         self._renderingControlSubscription = None        
         self._avTransportSubscription = None
-        self._listeningForZoneChanges = False
+        self._zoneGroupTopologySubscription = None
+
+        self._listeningForZoneChanges = False        
 
         self.current_zone = self.read_current_zone_file()
-        print(self.current_zone)
-
 
     # Attempts to return the current zone by reading from the setting file
     def read_current_zone_file(self):
@@ -58,8 +58,7 @@ class Sonos(object):
         return self._current_zone.player_name   
 
     @current_zone.setter
-    def current_zone(self, zoneName):
-        print(zoneName)
+    def current_zone(self, zoneName):        
         if zoneName is None or zoneName.strip() == '':
             # Set it to a random zone
             self._current_zone = soco.discover().pop()  
@@ -94,6 +93,29 @@ class Sonos(object):
         if self._current_zone is not None:
             self._current_zone.volume = volume
 
+    @property
+    def group_members(self):
+        ''' Return a sorted list of group member names or None '''
+        if self._current_zone is not None:
+            unique_members = set()
+            for member in self._current_zone.group.members:
+                if member.player_name != self._current_zone.player_name:
+                    unique_members.add(member.player_name)
+                        
+            return sorted(unique_members)
+        return None
+
+    @property
+    def current_zone_label(self):
+        ''' Return the current zone name or a modified version if there are members in its group '''
+        if self._current_zone is not None:
+            num_members = len(self.group_members)
+            if num_members > 0:
+                return self._current_zone.player_name + " + {}".format(num_members)
+            else:
+                return self._current_zone.player_name
+
+        return ''
     
     def play(self):
         if self._current_zone is not None:
@@ -109,12 +131,13 @@ class Sonos(object):
 
     def previous(self):
         if self._current_zone is not None:
-                self._current_zone.pause()
+            self._current_zone.pause()
     
     def listen_for_zone_changes(self, callback):
         self._listeningForZoneChanges = True
         self._avTransportSubscription = self._current_zone.avTransport.subscribe()
         self._renderingControlSubscription = self._current_zone.renderingControl.subscribe()
+        self._zoneGroupTopologySubscription = self._current_zone.zoneGroupTopology.subscribe()    
 
         def listen():
             while self._listeningForZoneChanges:
@@ -131,9 +154,16 @@ class Sonos(object):
                     callback(event.variables)
                 except:
                     pass
+                try:
+                    event = self._zoneGroupTopologySubscription.events.get(timeout=0.5)
+                    callback(event.variables)
+                except:
+                    pass
+
             
             self._avTransportSubscription.unsubscribe()
             self._renderingControlSubscription.unsubscribe()
+            self._zoneGroupTopologySubscription.unsubscribe()
             event_listener.stop()
             
         self._zoneListenerThread = Thread(target=listen)
@@ -142,15 +172,36 @@ class Sonos(object):
     def stop_listening_for_zone_changes(self, callback=None):
         self._listeningForZoneChanges = False
         if self._zoneListenerThread is not None: self._zoneListenerThread.join()
-        if callback: callback()        
-
+        if callback: callback()
+                
     @staticmethod
     def get_zone_names():
+        ''' Returns a sorted list of zone names '''
         zone_list = list(soco.discover())
         zone_names = []    
         for zone in zone_list:
             zone_names.append(zone.player_name)
         return sorted(zone_names)
+
+    @staticmethod
+    def get_zone_groups():
+        ''' Returns a sorted list of zone groups '''
+        zone_list = list(soco.discover())
+        zones = []
+        for zone in zone_list:
+            # Set of members in group that are not itself
+            unique_members = set()
+            for member in zone.group.members:
+                if member.player_name != zone.player_name :
+                    unique_members.add(member.player_name)
+            
+            zones.append({
+                "name": zone.player_name,
+                "is_coordinator": zone.player_name == zone.group.coordinator.player_name,
+                "members": sorted(unique_members) # Get sorted list from set
+            })
+
+        return sorted(zones)
 
     ### Private Methods ###
     @staticmethod

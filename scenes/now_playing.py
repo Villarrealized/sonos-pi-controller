@@ -27,7 +27,7 @@ class NowPlaying(Scene):
         self.background_color = colors.NAVY
 
         # Current Room   
-        self.room_label = Label(Rect(50,24,220,30),self.sonos.current_zone,30,colors.WHITE)
+        self.room_label = Label(Rect(50,24,220,30),self.sonos.current_zone_label,30,colors.WHITE)
         self.add_child(self.room_label)
 
         # Select Room
@@ -118,6 +118,13 @@ class NowPlaying(Scene):
         self.volume_up_button.on_tapped.connect(self.volume_up)
         self.add_child(self.volume_up_button)
 
+        ##### Group Rooms Button #####
+        group_rooms_img = Image('group_rooms',filename='group_rooms.png')
+        self.group_rooms_button = Button(Rect(270,440,26,26),image=group_rooms_img)
+        #Touch Handler
+        self.group_rooms_button.on_tapped.connect(self.group_rooms)
+        self.add_child(self.group_rooms_button)        
+
         # Layout the scene
         self.layout()
 
@@ -160,24 +167,34 @@ class NowPlaying(Scene):
     def unmute(self, button):
         self.update_volume_state(0)
         self.sonos.mute = 0
-
-    def select_room(self, button):
-        # Modal
-        self.selectRoomScene = SelectRoom(self.sonos)        
-        self.add_child(self.selectRoomScene)             
-
     ##### End Button Handlers #####
+
+    ##### Modals #####
+    def select_room(self, button):        
+        self.selectRoomScene = SelectRoom(self.sonos)        
+        self.add_child(self.selectRoomScene)    
+
+    def group_rooms(self, button):
+        print('group rooms')
+
+    ##### End Modals #####
+
+    
 
     def change_room(self, room):
         if self.sonos.current_zone != room:
             self.sonos.current_zone = room
-            self.room_label.text = room
+            self.room_label.text = self.sonos.current_zone_label
             # Subscribe to new zone changes
             self.sonos.listen_for_zone_changes(self.zone_state_changed)
 
     def show_ui(self):
         for child in self.children:
             child.hidden = False
+
+    def update_room_label(self, text):
+        if text is not None:
+            self.room_label.text = text
 
     def update_volume_state(self, mute):
         if mute:
@@ -232,7 +249,7 @@ class NowPlaying(Scene):
         '''Callback function that is called every time the zone state changes ex. new track, play, pause, volume change, etc.'''        
         # print("")
         # pprint(data)
-        # print("")                
+        # print("")          
 
         ###### Handle all the changed data #####
 
@@ -243,7 +260,10 @@ class NowPlaying(Scene):
 
         # Rendering Controls       
         if 'mute' in data: self.update_volume_state(int(data['mute']['Master']))
-        if 'volume' in data: self.update_volume_label(int(data['volume']['Master']))             
+        if 'volume' in data: self.update_volume_label(int(data['volume']['Master']))   
+
+        # Zone Group Topology Data
+        if 'zone_group_name' in data: self.update_room_label(data['zone_group_name'])
         
         # Reveal UI after we have loaded the data for the first time
         if self.firstLoad:
