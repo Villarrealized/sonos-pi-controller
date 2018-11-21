@@ -69,6 +69,9 @@ class Sonos(object):
             self._current_zone = Sonos.get_zone_by_name(zoneName)
         else:
             self._current_zone = Sonos.get_zone_by_name(zoneName)
+        
+        if not self.is_coordinator:
+            self.update_zone_to_coordinator()
 
         self.update_current_zone_file()        
 
@@ -91,7 +94,14 @@ class Sonos(object):
     @volume.setter
     def volume(self, volume):
         if self._current_zone is not None:
+            volume_diff = volume - self._current_zone.volume
             self._current_zone.volume = volume
+
+            # update group volume, if applicable
+            for member in self.group_members:
+                zone = Sonos.get_zone_by_name(member)
+                zone.volume += volume_diff
+
 
     @property
     def group_members(self):
@@ -120,14 +130,24 @@ class Sonos(object):
     @property
     def current_zone_label(self):
         ''' Return the current zone name or a modified version if there are members in its group '''
-        if self._current_zone is not None:
-            num_members = len(self.group_members)
+        if self._current_zone is not None:            
+            num_members = len(self.group_members)            
             if num_members > 0:
                 return self._current_zone.player_name + " + {}".format(num_members)
             else:
                 return self._current_zone.player_name
 
         return ''
+
+    @property
+    def is_coordinator(self):
+        if self._current_zone is not None:
+            return self._current_zone.player_name == self._current_zone.group.coordinator.player_name 
+        return False
+
+    def update_zone_to_coordinator(self):
+        if self._current_zone is not None:
+            self.current_zone = self._current_zone.group.coordinator.player_name
     
     def play(self):
         if self._current_zone is not None:
@@ -144,6 +164,16 @@ class Sonos(object):
     def previous(self):
         if self._current_zone is not None:
             self._current_zone.pause()
+
+    def group(self, rooms):
+        ''' Joins all the speakers in the list to the current zone '''
+        if self._current_zone is not None:
+            for room in rooms:
+                zone = Sonos.get_zone_by_name(room["name"])
+                if room['join']:
+                    zone.join(self._current_zone)
+                else:
+                    zone.unjoin()
     
     def listen_for_zone_changes(self, callback):
         self._listeningForZoneChanges = True

@@ -20,7 +20,7 @@ class SelectRoom(Scene):
         self.generate_room_list()        
 
         # Rooms label   
-        self.room_label = Label(Rect(50,20,220,40),"Rooms",40,colors.WHITE)
+        self.room_label = Label(Rect(20,20,280,40),"Rooms",40,colors.WHITE)
         self.add_child(self.room_label)
 
         ##### Close Button #####
@@ -34,7 +34,7 @@ class SelectRoom(Scene):
 
     def change_room(self, button):        
         # Get the first room, because it is the coordinator
-        self.parent.change_room(button.label.text.split(',')[0])
+        self.parent.select_room(button.label.text.split(',')[0])
         self.remove()
 
     def close(self, button):

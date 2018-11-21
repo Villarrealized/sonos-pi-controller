@@ -34,7 +34,7 @@ class NowPlaying(Scene):
         select_room_image = Image('select_room',filename='select_room.png')
         self.select_room_button = Button(Rect(270,20,30,30),image=select_room_image)
         #Touch Handler
-        self.select_room_button.on_tapped.connect(self.select_room)
+        self.select_room_button.on_tapped.connect(self.select_room_modal)
         self.add_child(self.select_room_button)
 
         # Album Art
@@ -122,7 +122,7 @@ class NowPlaying(Scene):
         group_rooms_img = Image('group_rooms',filename='group_rooms.png')
         self.group_rooms_button = Button(Rect(270,440,26,26),image=group_rooms_img)
         #Touch Handler
-        self.group_rooms_button.on_tapped.connect(self.group_rooms)
+        self.group_rooms_button.on_tapped.connect(self.group_rooms_modal)
         self.add_child(self.group_rooms_button)        
 
         # Layout the scene
@@ -175,19 +175,20 @@ class NowPlaying(Scene):
     ##### End Button Handlers #####
 
     ##### Modals #####
-    def select_room(self, button):        
+    def select_room_modal(self, button):        
         self.selectRoomScene = SelectRoom(self.sonos)        
         self.add_child(self.selectRoomScene)    
 
-    def group_rooms(self, button):
+    def group_rooms_modal(self, button):
         self.groupRoomScene = GroupRooms(self.sonos)
         self.add_child(self.groupRoomScene)
 
     ##### End Modals #####
 
-    
-
-    def change_room(self, room):
+    def group_rooms(self, rooms):
+        self.sonos.group(rooms)        
+        
+    def select_room(self, room):
         if self.sonos.current_zone != room:
             self.sonos.current_zone = room
             self.room_label.text = self.sonos.current_zone_label
@@ -198,9 +199,15 @@ class NowPlaying(Scene):
         for child in self.children:
             child.hidden = False
 
-    def update_room_label(self, text):
-        if text is not None:
-            self.room_label.text = text
+    def update_group_data(self, room_text):
+        if room_text is not None:
+            self.room_label.text = room_text
+        
+        # Check to see if we are still the coordinator of the group,
+        # otherwise we need to switch zones
+        if not self.sonos.is_coordinator:
+            print('you are not the coordinator')
+            self.sonos.update_zone_to_coordinator()
 
     def update_volume_state(self, mute):
         if mute:
@@ -221,15 +228,12 @@ class NowPlaying(Scene):
             self.play_button.hidden = False
             self.pause_button.hidden = True
 
-    def update_available_actions(self, actions):    
+    def update_available_actions(self, actions):         
         self.next_button.enabled = 'Next' in actions
         self.previous_button.enabled = 'Previous' in actions
         self.play_button.enabled = 'Play' in actions
 
     def update_track_info(self, track, tv_playing):
-        # print('Duration: {}'.format(track['duration']))
-        # print('Position: {}'.format(track['position']))        
-
         self.track_label.text = track['title']
         self.artist_label.text = track['artist']
         self.album_label.text = track['album']
@@ -269,7 +273,7 @@ class NowPlaying(Scene):
         if 'volume' in data: self.update_volume_label(int(data['volume']['Master']))   
 
         # Zone Group Topology Data
-        if 'zone_group_name' in data: self.update_room_label(data['zone_group_name'])
+        if 'zone_group_name' in data: self.update_group_data(data['zone_group_name'])        
         
         # Reveal UI after we have loaded the data for the first time
         if self.firstLoad:

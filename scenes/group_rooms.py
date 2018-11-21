@@ -20,7 +20,7 @@ class GroupRooms(Scene):
         self.background_color = colors.MODAL
 
         # Rooms label   
-        self.room_label = Label(Rect(50,20,200,40),self.sonos.current_zone,40,colors.WHITE)
+        self.room_label = Label(Rect(20,20,280,40),self.sonos.current_zone,40,colors.WHITE)
         self.add_child(self.room_label)
 
          ##### Close Button #####
@@ -36,6 +36,8 @@ class GroupRooms(Scene):
 
         self.room_buttons = []
 
+        self.unchanged = True
+
         self.layout()
         self.generate_rooms()
 
@@ -43,10 +45,19 @@ class GroupRooms(Scene):
         self.remove()
 
     def done(self, button):
-        for button in self.room_buttons:
-            print(button.label.text + ": " + button.checked)            
+        if not self.unchanged:
+            rooms = []
+            for button in self.room_buttons:            
+                rooms.append({
+                    "name": button.label.text,
+                    "join": button.checked
+                })
+
+            self.parent.group_rooms(rooms)
+        self.remove()            
 
     def select_room(self, button):
+        self.unchanged = False
         button.checked = not button.checked
 
     def generate_rooms(self):
