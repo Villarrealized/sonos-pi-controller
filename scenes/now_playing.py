@@ -1,4 +1,3 @@
-import os
 from pprint import pprint
 
 from pygame import Rect
@@ -12,6 +11,7 @@ from controller.ui.label import Label
 from controller.ui.image_view import ImageView
 from scenes.select_room import SelectRoom
 from scenes.group_rooms import GroupRooms
+from scenes.select_music import SelectMusic
 
 import colors
 
@@ -25,6 +25,13 @@ class NowPlaying(Scene):
         ########## SETUP UI ##########
 
         self.background_color = colors.NAVY
+
+        # Select Room
+        select_music_image = Image('select_music',filename='select_music.png')
+        self.select_music_button = Button(Rect(20,20,30,30),image=select_music_image)
+        #Touch Handler
+        self.select_music_button.on_tapped.connect(self.select_music_modal)
+        self.add_child(self.select_music_button)
 
         # Current Room   
         self.room_label = Label(Rect(50,24,220,30),self.sonos.current_zone_label,30,colors.WHITE)
@@ -177,7 +184,11 @@ class NowPlaying(Scene):
     ##### Modals #####
     def select_room_modal(self, button):        
         self.selectRoomScene = SelectRoom(self.sonos)        
-        self.add_child(self.selectRoomScene)    
+        self.add_child(self.selectRoomScene)   
+
+    def select_music_modal(self, button):        
+        self.selectMusicScene = SelectMusic(self.sonos)        
+        self.add_child(self.selectMusicScene)    
 
     def group_rooms_modal(self, button):
         self.groupRoomScene = GroupRooms(self.sonos)

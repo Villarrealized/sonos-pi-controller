@@ -1,5 +1,3 @@
-import os
-
 from pygame import Rect
 
 from sonos import Sonos
