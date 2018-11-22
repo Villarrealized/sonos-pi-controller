@@ -8,8 +8,6 @@ import colors
 class Button(View):
     """A button that can have an image or a label or both.
     Can connect a callback
-    TODO: Add support for a text label
-    
     """
     def __init__(self, frame, font_size=30, text_align=Label.CENTER, **kwargs):
         View.__init__(self,frame)        

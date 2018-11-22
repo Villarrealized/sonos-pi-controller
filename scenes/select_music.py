@@ -2,6 +2,7 @@ from pygame import Rect
 
 from sonos import Sonos
 
+from controller.ui.list_view import ListView
 from controller.ui.modal_scene import ModalScene
 from controller.ui.image import Image
 from controller.ui.button import Button
@@ -25,11 +26,15 @@ class SelectMusic(ModalScene):
 
     def create_library_list(self):
         y = 80
-        for category in SelectMusic.CATEGORIES :
+        for category in SelectMusic.CATEGORIES:
             library_option_button = Button(Rect(40,y,240,40), 34, Label.LEFT, text=category)
             library_option_button.on_tapped.connect(self.select_library_option)
             self.add_child(library_option_button)            
             y += 80
 
     def select_library_option(self, button):
-        print(button.label.text)
+        option = button.label.text
+        print(option)
+
+        if option == 'Playlists':
+            
