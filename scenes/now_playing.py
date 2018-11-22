@@ -136,12 +136,12 @@ class NowPlaying(Scene):
         self.layout()
 
         # Keep hidden until everything has loaded
-        self.hidden = True
+        #self.hidden = True
 
         ########## END SETUP UI ##########
 
         # Listen for all changes to the current zone   
-        self.sonos.listen_for_zone_changes(self.zone_state_changed)
+        #self.sonos.listen_for_zone_changes(self.zone_state_changed)
                      
 
     

@@ -2,7 +2,7 @@ from pygame import Rect
 
 from sonos import Sonos
 
-from controller.ui.scene import Scene
+from controller.ui.modal_scene import ModalScene
 from controller.ui.image import Image
 from controller.ui.button import Button
 from controller.ui.label import Label
@@ -10,34 +10,18 @@ from controller.ui.label import Label
 import colors
 
 
-class SelectMusic(Scene):
+class SelectMusic(ModalScene):
 
     CATEGORIES = ['Artists', 'Albums', 'Genres', 'Favorites', 'Playlists']
 
     def __init__(self, sonos):
-        Scene.__init__(self)
+        ModalScene.__init__(self, "Music Library")
 
         self.sonos = sonos
         self.background_color = colors.NAVY
-
-         # Title
-        self.title_label = Label(Rect(50,20,220,40),"Music Library",40,colors.WHITE)
-        self.add_child(self.title_label)
-
-        ##### Close Button #####
-        icon_close_image = Image('icon_close',filename='icon_close.png')
-        self.close_button = Button(Rect(20,20,30,30),image=icon_close_image)        
-        self.close_button.on_tapped.connect(self.close)
-        self.add_child(self.close_button)
-
         self.layout()
 
         self.create_library_list()
-
-        
-
-    def close(self, button):
-        self.remove()
 
     def create_library_list(self):
         y = 80
