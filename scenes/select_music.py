@@ -4,6 +4,7 @@ from sonos import Sonos
 
 from controller.ui.list_view import ListView
 from controller.ui.modal_scene import ModalScene
+from scenes.select_artist import SelectArtist
 from controller.ui.image import Image
 from controller.ui.button import Button
 from controller.ui.label import Label
@@ -24,6 +25,11 @@ class SelectMusic(ModalScene):
 
         self.create_library_list()
 
+        ### Testing ###
+        self.select_library_option('Artists')
+
+
+
     def create_library_list(self):
         y = 80
         for category in SelectMusic.CATEGORIES:
@@ -32,9 +38,15 @@ class SelectMusic(ModalScene):
             self.add_child(library_option_button)            
             y += 80
 
-    def select_library_option(self, button):
-        option = button.label.text
+    # def select_library_option(self, button):
+    #     option = button.label.text
+    #     print(option)
+
+
+    def select_library_option(self, text):
+        option = text
         print(option)
 
-        if option == 'Playlists':
-            
+        if option == 'Artists':
+            artistScene = SelectArtist(self.sonos)
+            self.add_child(artistScene)

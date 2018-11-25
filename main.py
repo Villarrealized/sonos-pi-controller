@@ -60,16 +60,14 @@ def wake_up_display():
     timer.start()
 
 
-
-
  ##### Main Loop #####
 while True:    
     # Scan touchscreen events
     for event in pygame.event.get():
         mouse_position = pygame.mouse.get_pos()        
 
-        # print ""
-        # print ("Tap on window at: {}".format(mouse_position))               
+        print ""
+        print ("Tap on window at: {}".format(mouse_position))               
 
         if Backlight.enabled:
             if touch_enabled:

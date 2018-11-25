@@ -76,7 +76,7 @@ class NowPlaying(Scene):
         self.pause_button.on_tapped.connect(self.pause)
         self.add_child(self.pause_button)
 
-        ##### Previous Button #####
+        ##### Previous Track #####
         previous_track_img = Image('previous_track',filename='previous_track.png')
         previous_track_disabled_img = Image('previous_track_disabled',filename='previous_track_disabled.png')        
         self.previous_button = Button(Rect(65,370,40,40),image=previous_track_img, disabled_image=previous_track_disabled_img)
@@ -84,7 +84,7 @@ class NowPlaying(Scene):
         self.previous_button.on_tapped.connect(self.previous)
         self.add_child(self.previous_button)
 
-        ##### Next Button #####
+        ##### Next Track #####
         next_track_img = Image('next_track',filename='next_track.png')
         next_track_disabled_img = Image('next_track_disabled',filename='next_track_disabled.png')
         self.next_button = Button(Rect(215,370,40,40),image=next_track_img,disabled_image=next_track_disabled_img)
@@ -142,6 +142,9 @@ class NowPlaying(Scene):
 
         # Listen for all changes to the current zone   
         #self.sonos.listen_for_zone_changes(self.zone_state_changed)
+
+        ####TESTING######
+        self.select_music_modal(None)
                      
 
     
