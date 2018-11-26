@@ -33,3 +33,7 @@ class SelectArtist(NavigationScene):
     def artist_selected(self, list_view, artist, index):
          print(artist)
          print(index)
+        
+        # Browse the albums for this artist
+        scene = SelectAlbum(self.sonos,Sonos.browse(self.artists[index]))
+        self.add_child(scene)
