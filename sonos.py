@@ -16,6 +16,7 @@ class Sonos(object):
     # The amount the volume is changed
     # each time it is increased or decreased
     VOLUME_CHANGE = 2
+    instance = soco.discover().pop()
 
     def __init__(self):        
         self._current_zone = None
@@ -220,6 +221,33 @@ class Sonos(object):
         self._listeningForZoneChanges = False
         if self._zoneListenerThread is not None: self._zoneListenerThread.join()
         if callback: callback()
+
+
+    @classmethod
+    def artists(cls):
+        return Sonos.instance.music_library.get_artists(complete_result=True)
+
+    @classmethod
+    def albums(cls):
+        return Sonos.instance.music_library.get_albums(complete_result=True)
+    
+    @classmethod
+    def genres(cls):
+        return Sonos.instance.music_library.get_genres(complete_result=True)
+
+    @classmethod
+    def playlists(cls):
+        return Sonos.instance.music_library.get_playlists(complete_result=True)
+    
+    @classmethod
+    def favorites(cls):
+        return Sonos.instance.music_library.get_sonos_favorites(complete_result=True)
+    
+    @classmethod
+    def browse(cls, ml_item):
+        return Sonos.instance.music_library.browse(ml_item,0,100000,True)
+
+
                 
     @staticmethod
     def get_zone_names():
@@ -248,7 +276,7 @@ class Sonos(object):
                 "members": sorted(unique_members) # Get sorted list from set
             })
 
-        return sorted(zones)
+        return sorted(zones)        
 
     ### Private Methods ###
     @staticmethod

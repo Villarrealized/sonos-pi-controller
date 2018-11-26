@@ -10,7 +10,10 @@ import colors
 
 
 class ListView(View):
-    ''' Items is an array of strings that will be made into a list of buttons'''
+    
+    ''' The ListView is a reusable view for displaying paged lists of items
+
+    Items is an array of strings that will be made into a list of buttons'''
     def __init__(self, frame, items):
         View.__init__(self, frame)
 

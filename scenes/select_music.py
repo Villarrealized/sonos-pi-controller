@@ -4,7 +4,13 @@ from sonos import Sonos
 
 from controller.ui.list_view import ListView
 from controller.ui.modal_scene import ModalScene
+
 from scenes.select_artist import SelectArtist
+from scenes.select_album import SelectAlbum
+from scenes.select_genre import SelectGenre
+from scenes.select_playlist import SelectPlaylist
+from scenes.select_favorite import SelectFavorite
+
 from controller.ui.image import Image
 from controller.ui.button import Button
 from controller.ui.label import Label
@@ -14,7 +20,7 @@ import colors
 
 class SelectMusic(ModalScene):
 
-    CATEGORIES = ['Artists', 'Albums', 'Genres', 'Favorites', 'Playlists']
+    CATEGORIES = ['Artists', 'Albums', 'Genres', 'Playlists', 'Favorites']
 
     def __init__(self, sonos):
         ModalScene.__init__(self, "Music Library")
@@ -46,7 +52,18 @@ class SelectMusic(ModalScene):
     def select_library_option(self, text):
         option = text
         print(option)
+        scene = None
 
         if option == 'Artists':
-            artistScene = SelectArtist(self.sonos)
-            self.add_child(artistScene)
+            scene = SelectArtist(self.sonos)            
+        elif option == 'Albums':
+            scene = SelectAlbum(self.sonos)            
+        elif option == 'Genres':
+            scene = SelectGenre(self.sonos)            
+        elif option == 'Playlists':
+            scene = SelectPlaylist(self.sonos)            
+        elif option == 'Favorites':
+            scene = SelectFavorite(self.sonos)
+
+        if scene is not None: self.add_child(scene)
+        
