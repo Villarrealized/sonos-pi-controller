@@ -18,6 +18,7 @@ class View(object):
         self.background_color = None
 
         self.on_mouse_up = Signal()
+        self.on_parented = Signal()
     
     @property
     def width(self):
@@ -63,6 +64,7 @@ class View(object):
         assert child is not None
         self.children.append(child)
         child.parent = self
+        child.parented()
 
     def remove_child(self, child_to_remove):
         for index, child in enumerate(self.children):
@@ -73,6 +75,9 @@ class View(object):
     def remove(self):
         if self.parent is not None:
             self.parent.remove_child(self)
+    
+    def parented(self):
+        self.on_parented()
 
     def mouse_up(self, point):
         # print "Mouse up on point: {}".format(point)

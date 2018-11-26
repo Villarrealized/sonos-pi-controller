@@ -7,6 +7,7 @@ from controller.ui.navigation_scene import NavigationScene
 from controller.ui.image import Image
 from controller.ui.button import Button
 from controller.ui.label import Label
+from controller.ui.window import Window
 
 import colors
 
@@ -51,68 +52,11 @@ class SelectArtist(NavigationScene):
         self.sonos = sonos
         self.background_color = colors.NAVY
 
-        ##### Previous Button #####
-        previous_button_image = Image('previous_button',filename='previous_button.png')
-        self.previous_button = Button(Rect(130,420,40,40),image=previous_button_image)        
-        self.previous_button.on_tapped.connect(self.previous)
-        self.previous_button.hidden = True
-        self.add_child(self.previous_button)
+        self.artist_list_view = ListView(Rect(0,80,Window.frame.width, Window.frame.height - 80),self.artists)
+        self.artist_list_view.on_selected.connect(self.artist_selected)
+        self.add_child(self.artist_list_view)
 
-        ##### Next Button #####
-        next_button_image = Image('next_button',filename='next_button.png')
-        self.next_button = Button(Rect(190,420,40,40),image=next_button_image)        
-        self.next_button.on_tapped.connect(self.next)
-        self.next_button.hidden = True
-        self.add_child(self.next_button)
-
-        self.layout()
-
-        self.create_artist_list()
-
-        self.next(None)
-
-
-
-    def create_artist_list(self):
-        # Clean up any old buttons before addings new ones
-        for button in self.list_buttons:
-            self.remove()
-
-        self.update_list_navigation()
-
-        y = 80
-        for index, artist in enumerate(self.artists):
-            if index >= self.list_index and index < self.per_page:
-                artist_button = Button(Rect(40,y,240,30), 30, Label.LEFT, text=artist)
-                artist_button.on_tapped.connect(self.select_artist)
-                self.add_child(artist_button)
-                self.list_buttons.append(artist_button)
-                y += 50
-
-
-    def select_artist(self, button):
-        print(self.button.text)
-
-    def update_list_navigation(self):
-        num_artists = len(self.artists)
-        if num_artists == 0: return   
-
-        if (self.list_index + self.per_page) < num_artists:
-            self.next_button.hidden = False
-        else:
-            self.next_button.hidden = True
         
-        if (self.list_index - self.per_page) >= 0:
-            self.previous_button.hidden = False
-        else:
-            self.previous_button.hidden = True
-
-
-    def next(self, button):
-        self.list_index += self.per_page
-        self.create_artist_list()
-
-    def previous(self, button):
-        self.list_index -= self.per_page
-        self.create_artist_list
-
+    def artist_selected(self, list_view, artist, index):
+         print(artist)
+         print(index)
