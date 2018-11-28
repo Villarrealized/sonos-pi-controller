@@ -69,5 +69,5 @@ class Button(View):
         elif self.label is not None:
             self.surface = self.label.surface
 
-    def mouse_up(self, point):
+    def mouse_up(self, button, point):
         self.on_tapped(self)

@@ -10,8 +10,8 @@ import colors
 
 
 class SelectAlbum(NavigationScene):
-    def __init__(self, sonos, albums=Sonos.albums()):
-        NavigationScene.__init__(self, "Albums")
+    def __init__(self, sonos, title="Albums", albums=Sonos.albums()):
+        NavigationScene.__init__(self, title)
 
 
         self.sonos = sonos

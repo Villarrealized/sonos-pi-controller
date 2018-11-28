@@ -142,11 +142,7 @@ class NowPlaying(Scene):
 
         # Listen for all changes to the current zone   
         #self.sonos.listen_for_zone_changes(self.zone_state_changed)
-
-        ####TESTING######
-        self.select_music_modal(None)
                      
-
     
     ###### Button Handlers #####
     def play(self, button):        

@@ -53,14 +53,14 @@ class ListView(View):
         for index, item in enumerate(self.items):
             if index >= self.list_index and index < (self.list_index + self.per_page):
                 item_button = Button(Rect(40,y,240,30), 30, Label.LEFT, text=item)
-                # item_button.on_tapped.connect(self.select_item)
+                item_button.on_tapped.connect(self.select_item)
                 self.add_child(item_button)
                 self.list_buttons.append(item_button)
                 y += 50
 
 
-    def select_item(self, button):
-        print(self.button.text)
+    def select_item(self, button):        
+        self.on_selected(self, button.label.text, self.items.index(button.label.text))
 
     def update_list_navigation(self):
         item_count = len(self.items)
@@ -90,13 +90,6 @@ class ListView(View):
         if index is not None:
             item = self.items[index]
             self.on_selected(self, item, index)
-
-    def mouse_up(self, button, point):
-        print(point)
-        for index, child in enumerate(self.list_buttons):
-            if point[1] >= child.frame.top and point[1] <= child.frame.bottom:
-                self.select(index)
-                break
 
     def parented(self):
         # This is needed or else font will appear a bit fuzzy

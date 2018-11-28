@@ -66,8 +66,8 @@ while True:
     for event in pygame.event.get():
         mouse_position = pygame.mouse.get_pos()        
 
-        print ""
-        print ("Tap on window at: {}".format(mouse_position))               
+        # print ""
+        # print ("Tap on window at: {}".format(mouse_position))               
 
         if Backlight.enabled:
             if touch_enabled:
@@ -77,7 +77,7 @@ while True:
                 hit_view = Window.scene.hit(mouse_position)        
                 if event.type is MOUSEBUTTONUP:          
                     if hit_view is not None and hit_view is not Window.scene:
-                        hit_view.mouse_up(mouse_position)
+                        hit_view.mouse_up(event.button, mouse_position)
                     
                     # Start backlight timer
                     if not backlight_timer.is_alive():                    

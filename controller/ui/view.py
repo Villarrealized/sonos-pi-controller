@@ -79,9 +79,23 @@ class View(object):
     def parented(self):
         self.on_parented()
 
-    def mouse_up(self, point):
+
+    def to_parent(self, point):
+        ''' Convert child coordinates to parent's coordinates '''
+        return (point[0] + self.frame.topleft[0],
+            point[1] + self.frame.topleft[1])
+
+    def to_window(self, point):
+        ''' convert point to a window's point '''
+        curr = self
+        while curr:
+            point = curr.to_parent(point)
+            curr = curr.parent
+        return point
+
+    def mouse_up(self, button, point):
         # print "Mouse up on point: {}".format(point)
-        self.on_mouse_up(self, point)
+        self.on_mouse_up(self, button, point)
 
     def hit(self, point):
         """Find the view under point given, if any."""
@@ -93,13 +107,13 @@ class View(object):
             return None        
         
         # Find the local coordinates of tap 
-        #local_point = (point[0] - self.frame.topleft[0], point[1] - self.frame.topleft[1])
+        local_point = (point[0] - self.frame.topleft[0], point[1] - self.frame.topleft[1])
 
         # print "Local point: {}".format(local_point)
         
         # Walk through children, starting with top most layer
         for child in reversed(self.children):
-            hit_view = child.hit(point)
+            hit_view = child.hit(local_point)
             if hit_view is not None:                
                 return hit_view
         return self

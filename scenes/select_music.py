@@ -31,11 +31,6 @@ class SelectMusic(ModalScene):
 
         self.create_library_list()
 
-        ### Testing ###
-        self.select_library_option('Artists')
-
-
-
     def create_library_list(self):
         y = 80
         for category in SelectMusic.CATEGORIES:
@@ -44,13 +39,8 @@ class SelectMusic(ModalScene):
             self.add_child(library_option_button)            
             y += 80
 
-    # def select_library_option(self, button):
-    #     option = button.label.text
-    #     print(option)
-
-
-    def select_library_option(self, text):
-        option = text
+    def select_library_option(self, button):
+        option = button.label.text
         print(option)
         scene = None
 
