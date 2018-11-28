@@ -33,3 +33,4 @@ class SelectArtist(NavigationScene):
         # Browse the albums for this artist
         scene = SelectAlbum(self.sonos,title,Sonos.browse(self.artists[index]))
         self.add_child(scene)
+        

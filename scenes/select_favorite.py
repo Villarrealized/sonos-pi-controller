@@ -30,3 +30,4 @@ class SelectFavorite(NavigationScene):
     def favorite_selected(self, list_view, title, index):         
         self.sonos.play_favorite(self.favorites[index])
         self.popToMainScene()
+        

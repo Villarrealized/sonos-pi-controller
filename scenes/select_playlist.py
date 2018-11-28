@@ -15,7 +15,6 @@ class SelectPlaylist(NavigationScene):
     def __init__(self, sonos, playlists=Sonos.playlists()):
         NavigationScene.__init__(self, "Playlists")
 
-
         self.sonos = sonos
         self.background_color = colors.NAVY        
 
@@ -31,7 +30,6 @@ class SelectPlaylist(NavigationScene):
 
         
     def playlist_selected(self, list_view, title, index):
-         # Browse the tracks for this playlist
-        print(self.playlists[index])
-        scene = SelectTrack(self.sonos,title,Sonos.browse(self.playlists[index]))
+         # Browse the tracks for this playlist        
+        scene = SelectTrack(self.sonos,title,Sonos.browse(self.playlists[index]), self.playlists[index])
         self.add_child(scene)

@@ -31,6 +31,7 @@ class SelectAlbum(NavigationScene):
 
         
     def album_selected(self, list_view, title, index):
-        # Browse the tracks for this album
-        scene = SelectTrack(self.sonos,title,Sonos.browse(self.albums[index]))
+        # Browse the tracks for this album        
+        scene = SelectTrack(self.sonos,title,Sonos.browse(self.albums[index]),self.albums[index])
         self.add_child(scene)
+        

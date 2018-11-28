@@ -55,4 +55,4 @@ class SelectMusic(ModalScene):
             scene = SelectFavorite(self.sonos)
 
         if scene is not None: self.add_child(scene)
-        
+            

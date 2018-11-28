@@ -26,10 +26,9 @@ class NowPlaying(Scene):
 
         self.background_color = colors.NAVY
 
-        # Select Room
+        # Select Music
         select_music_image = Image('select_music',filename='select_music.png')
         self.select_music_button = Button(Rect(20,20,30,30),image=select_music_image)
-        #Touch Handler
         self.select_music_button.on_tapped.connect(self.select_music_modal)
         self.add_child(self.select_music_button)
 
@@ -40,7 +39,6 @@ class NowPlaying(Scene):
         # Select Room
         select_room_image = Image('select_room',filename='select_room.png')
         self.select_room_button = Button(Rect(270,20,30,30),image=select_room_image)
-        #Touch Handler
         self.select_room_button.on_tapped.connect(self.select_room_modal)
         self.add_child(self.select_room_button)
 
@@ -291,6 +289,3 @@ class NowPlaying(Scene):
         if self.firstLoad:
             self.hidden = False
             self.firstLoad = False
-
-        
-       

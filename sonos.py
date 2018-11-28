@@ -181,26 +181,37 @@ class Sonos(object):
                     zone.join(self._current_zone)
                 else:
                     zone.unjoin()
+    
+    @property
+    def play_mode(self):
+        if self._current_zone is not None:
+            return self._current_zone.play_mode
+
+    @play_mode.setter
+    def play_mode(self, play_mode):
+        if self._current_zone is not None:
+            self._current_zone.play_mode = play_mode
 
     def play_track(self, track):
         if self._current_zone is not None:
             self._current_zone.play_uri(track.resources[0].uri, to_didl_string(track))
 
-    def play_favorite(self, favorite):
-        print('playing favorite')
+    def play_playlist(self, playlist):
         if self._current_zone is not None:
-            try:
-                print ('trying to play uri')
+             # Replace the queue with these tracks and start playing
+            self._current_zone.clear_queue()
+            self._current_zone.add_to_queue(playlist)
+            self._current_zone.play()
+
+    def play_favorite(self, favorite):        
+        if self._current_zone is not None:
+            try:                
                 # Works for uri like x-sonosapi-radio (ex. Pandora)
                 self._current_zone.play_uri(favorite.reference.resources[0].uri, favorite.resource_meta_data)
             except:
-                try:
-                    print('trying to add to queue')
-                    # Works for uri like x-rincon-cpcontainer (ex. Sound Cloud playlist)
-                    # Replace the queue with these tracks and start playing
-                    self._current_zone.clear_queue()
-                    self._current_zone.add_to_queue(favorite.reference)
-                    self._current_zone.play()
+                try:                    
+                    # Works for uri like x-rincon-cpcontainer (ex. Sound Cloud playlist)                    
+                    self.play_playlist(favorite.reference)
                 except: 
                     pass
     

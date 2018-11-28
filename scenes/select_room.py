@@ -17,7 +17,6 @@ class SelectRoom(ModalScene):
         self.generate_room_list()
         self.layout()
 
-
     def change_room(self, button):        
         # Get the first room, because it is the coordinator
         self.parent.select_room(button.label.text.split(',')[0])
