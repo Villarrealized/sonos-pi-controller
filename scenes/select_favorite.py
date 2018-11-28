@@ -10,12 +10,14 @@ import ui.colors as colors
 
 
 class SelectFavorite(NavigationScene):
-    def __init__(self, sonos, favorites=Sonos.favorites()):
+    def __init__(self, sonos, favorites=None):
         NavigationScene.__init__(self, "Favorites")
 
         self.sonos = sonos
         self.background_color = colors.NAVY        
 
+        if favorites == None:
+            favorites = Sonos.favorites()
         self.favorites = favorites
         self.favorite_titles = []
         for favorite in self.favorites:

@@ -46,13 +46,11 @@ class SelectTrack(NavigationScene):
         self.sonos.play_track(self.tracks[index])
         self.popToMainScene()
 
-    def play_all(self, button):
-        self.sonos.play_mode = 'NORMAL'
-        self.sonos.play_playlist(self.playlist)
+    def play_all(self, button):        
+        self.sonos.play_playlist(self.playlist, 'NORMAL')
         self.popToMainScene()
 
-    def shuffle(self, button):
-        self.sonos.play_mode = 'SHUFFLE_NOREPEAT'
-        self.sonos.play_playlist(self.playlist)
+    def shuffle(self, button):        
+        self.sonos.play_playlist(self.playlist, 'SHUFFLE_NOREPEAT')
         self.popToMainScene()
         

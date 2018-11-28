@@ -12,12 +12,14 @@ import ui.colors as colors
 
 
 class SelectGenre(NavigationScene):
-    def __init__(self, sonos, genres=Sonos.genres()):
+    def __init__(self, sonos, genres=None):
         NavigationScene.__init__(self, "Genres")
 
         self.sonos = sonos
         self.background_color = colors.NAVY        
 
+        if genres == None:
+            genres = Sonos.genres()
         self.genres = genres
         self.genre_titles = []
         for genre in self.genres:

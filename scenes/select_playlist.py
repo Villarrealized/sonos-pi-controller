@@ -12,12 +12,14 @@ import ui.colors as colors
 
 
 class SelectPlaylist(NavigationScene):
-    def __init__(self, sonos, playlists=Sonos.playlists()):
+    def __init__(self, sonos, playlists=None):
         NavigationScene.__init__(self, "Playlists")
 
         self.sonos = sonos
         self.background_color = colors.NAVY        
 
+        if playlists == None:
+            playlists = Sonos.playlists()
         self.playlists = playlists
         self.playlist_titles = []
         for playlist in self.playlists:
