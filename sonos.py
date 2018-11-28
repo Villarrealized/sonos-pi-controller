@@ -170,7 +170,7 @@ class Sonos(object):
 
     def previous(self):
         if self._current_zone is not None:
-            self._current_zone.pause()
+            self._current_zone.previous()
 
     def group(self, rooms):
         ''' Joins all the speakers in the list to the current zone '''
@@ -189,19 +189,24 @@ class Sonos(object):
 
     @play_mode.setter
     def play_mode(self, play_mode):
-        if self._current_zone is not None:
-            self._current_zone.play_mode = play_mode
+        if self._current_zone is not None:            
+            try:
+                self._current_zone.play_mode = play_mode
+            except:
+                pass
 
     def play_track(self, track):
         if self._current_zone is not None:
             self._current_zone.play_uri(track.resources[0].uri, to_didl_string(track))
 
-    def play_playlist(self, playlist):
+    def play_playlist(self, playlist, play_mode='NORMAL'):
         if self._current_zone is not None:
-             # Replace the queue with these tracks and start playing
+             # Replace the queue with these tracks and start playing            
             self._current_zone.clear_queue()
             self._current_zone.add_to_queue(playlist)
-            self._current_zone.play()
+            self.play_mode = play_mode
+            # Start the queue on the first track
+            self._current_zone.play_from_queue(0)
 
     def play_favorite(self, favorite):        
         if self._current_zone is not None:
