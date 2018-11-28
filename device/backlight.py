@@ -10,16 +10,14 @@ class Backlight:
 
     @staticmethod
     def on():
-        if not Backlight.enabled:
-            print ("Turning display on")
+        if not Backlight.enabled:            
             with open(BACKLIGHT_CONTROL, 'w') as file:
                 file.write('1')
             Backlight.enabled = True
             
     @staticmethod
     def off():
-        if Backlight.enabled:
-            print ("Turning display off")
+        if Backlight.enabled:            
             with open(BACKLIGHT_CONTROL, 'w') as file:
                 file.write('0')
             Backlight.enabled = False

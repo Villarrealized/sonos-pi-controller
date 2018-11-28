@@ -51,6 +51,12 @@ def enable_touch():
     global touch_enabled
     touch_enabled = True
 
+def start_backlight_timer():
+    global backlight_timer
+    if not backlight_timer.is_alive():                    
+        backlight_timer = Timer(BACKLIGHT_TIMEOUT, Backlight.off)
+        backlight_timer.start()        
+
 def wake_up_display():  
     ''' Turn display on and prevent accidental touch by disabling touch for 0.5 seconds '''  
     global touch_enabled 
@@ -75,17 +81,16 @@ while True:
                 backlight_timer.cancel()
                 # Process touch events
                 hit_view = Window.scene.hit(mouse_position)        
-                if event.type is MOUSEBUTTONUP:          
+                if event.type is MOUSEBUTTONUP:
+                    start_backlight_timer()
                     if hit_view is not None and hit_view is not Window.scene:
-                        hit_view.mouse_up(event.button, mouse_position)
-                    
-                    # Start backlight timer
-                    if not backlight_timer.is_alive():                    
-                        backlight_timer = Timer(BACKLIGHT_TIMEOUT, Backlight.off)
-                        backlight_timer.start()        
+                        hit_view.mouse_up(event.button, mouse_position)                                        
         else:            
             # Turn the backlight on if the screen has been touched
-            wake_up_display()                 
+            wake_up_display()
+            # This is necessary to turn display off if 
+            # the screen is not touched after the initial wakeup touch
+            start_backlight_timer()                
                    
 
     Window.update()
