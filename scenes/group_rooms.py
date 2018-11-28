@@ -1,33 +1,20 @@
-import os
-
 from pygame import Rect
 
 from sonos import Sonos
 
-from controller.ui.scene import Scene
-from controller.ui.image import Image
-from controller.ui.button import Button
-from controller.ui.label import Label
+from ui.modal_scene import ModalScene
+from ui.image import Image
+from ui.button import Button
+from ui.label import Label
 
-import colors
+import ui.colors as colors
 
 
-class GroupRooms(Scene):
+class GroupRooms(ModalScene):
     def __init__(self, sonos):
-        Scene.__init__(self)
-
-        self.sonos = sonos
-        self.background_color = colors.MODAL
-
-        # Rooms label   
-        self.room_label = Label(Rect(20,20,280,40),self.sonos.current_zone,40,colors.WHITE)
-        self.add_child(self.room_label)
-
-         ##### Close Button #####
-        icon_close_image = Image('icon_close',filename='icon_close.png')
-        self.close_button = Button(Rect(20,20,30,30),image=icon_close_image)        
-        self.close_button.on_tapped.connect(self.close)
-        self.add_child(self.close_button)
+        ModalScene.__init__(self, sonos.current_zone)
+             
+        self.sonos = sonos   
 
         ##### Done Button #####        
         self.done_button = Button(Rect(20,430,280,40),40 ,text='Done')        
@@ -40,9 +27,6 @@ class GroupRooms(Scene):
 
         self.layout()
         self.generate_rooms()
-
-    def close(self, button):
-        self.remove()
 
     def done(self, button):
         if not self.unchanged:

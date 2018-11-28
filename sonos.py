@@ -6,6 +6,7 @@ from time import sleep
 
 import soco
 from soco.events import event_listener
+from soco.data_structures import to_didl_string
 
 from threading import Thread
 
@@ -16,6 +17,7 @@ class Sonos(object):
     # The amount the volume is changed
     # each time it is increased or decreased
     VOLUME_CHANGE = 2
+    instance = soco.discover().pop()
 
     def __init__(self):        
         self._current_zone = None
@@ -179,6 +181,10 @@ class Sonos(object):
                     zone.join(self._current_zone)
                 else:
                     zone.unjoin()
+
+    def play_track(self, track):
+        if self._current_zone is not None:
+            self._current_zone.play_uri(track.resources[0].uri, to_didl_string(track))
     
     def listen_for_zone_changes(self, callback):
         self._listeningForZoneChanges = True
@@ -189,7 +195,7 @@ class Sonos(object):
         def listen():
             while self._listeningForZoneChanges:                
                 try:
-                    event = self._avTransportSubscription.events.get(timeout=0.5)
+                    event = self._avTransportSubscription.events.get(timeout=0.1)
                     # Add in track info as well     
                     event.variables['track'] = self._current_zone.get_current_track_info()
                     event.variables['tv_playing'] = int(self._current_zone.is_playing_tv)
@@ -197,12 +203,12 @@ class Sonos(object):
                 except:
                     pass
                 try:
-                    event = self._renderingControlSubscription.events.get(timeout=0.5)
+                    event = self._renderingControlSubscription.events.get(timeout=0.1)
                     callback(event.variables)
                 except:
                     pass
                 try:
-                    event = self._zoneGroupTopologySubscription.events.get(timeout=0.5)
+                    event = self._zoneGroupTopologySubscription.events.get(timeout=0.1)
                     callback(event.variables)
                 except:
                     pass
@@ -220,6 +226,33 @@ class Sonos(object):
         self._listeningForZoneChanges = False
         if self._zoneListenerThread is not None: self._zoneListenerThread.join()
         if callback: callback()
+
+
+    @classmethod
+    def artists(cls):
+        return Sonos.instance.music_library.get_artists(complete_result=True)
+
+    @classmethod
+    def albums(cls):
+        return Sonos.instance.music_library.get_albums(complete_result=True)
+    
+    @classmethod
+    def genres(cls):
+        return Sonos.instance.music_library.get_genres(complete_result=True)
+
+    @classmethod
+    def playlists(cls):
+        return Sonos.instance.music_library.get_playlists(complete_result=True)
+    
+    @classmethod
+    def favorites(cls):
+        return Sonos.instance.music_library.get_sonos_favorites(complete_result=True)
+    
+    @classmethod
+    def browse(cls, ml_item):
+        return Sonos.instance.music_library.browse(ml_item,0,100000,True)
+
+
                 
     @staticmethod
     def get_zone_names():
@@ -248,7 +281,7 @@ class Sonos(object):
                 "members": sorted(unique_members) # Get sorted list from set
             })
 
-        return sorted(zones)
+        return sorted(zones)        
 
     ### Private Methods ###
     @staticmethod

@@ -3,13 +3,11 @@ import pygame
 from view import View
 from label import Label
 from callback_signal import Signal
-import colors
+import ui.colors as colors
 
 class Button(View):
     """A button that can have an image or a label or both.
     Can connect a callback
-    TODO: Add support for a text label
-    
     """
     def __init__(self, frame, font_size=30, text_align=Label.CENTER, **kwargs):
         View.__init__(self,frame)        
@@ -71,5 +69,5 @@ class Button(View):
         elif self.label is not None:
             self.surface = self.label.surface
 
-    def mouse_up(self, point):
+    def mouse_up(self, button, point):
         self.on_tapped(self)

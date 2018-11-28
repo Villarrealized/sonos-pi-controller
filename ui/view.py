@@ -18,6 +18,7 @@ class View(object):
         self.background_color = None
 
         self.on_mouse_up = Signal()
+        self.on_parented = Signal()
     
     @property
     def width(self):
@@ -63,6 +64,7 @@ class View(object):
         assert child is not None
         self.children.append(child)
         child.parent = self
+        child.parented()
 
     def remove_child(self, child_to_remove):
         for index, child in enumerate(self.children):
@@ -74,9 +76,33 @@ class View(object):
         if self.parent is not None:
             self.parent.remove_child(self)
 
-    def mouse_up(self, point):
+    def popToMainScene(self):
+        ''' Remove all the views until top scene is the current view '''
+        current_view = self
+        while current_view.parent:
+            current_view.remove()
+            current_view = current_view.parent
+    
+    def parented(self):
+        ''' Notify a view when it has been assigned a parent'''
+        self.on_parented()
+
+    def to_parent(self, point):
+        ''' Convert child coordinates to parent's coordinates '''
+        return (point[0] + self.frame.topleft[0],
+            point[1] + self.frame.topleft[1])
+
+    def to_window(self, point):
+        ''' convert point to a window's point '''
+        curr = self
+        while curr:
+            point = curr.to_parent(point)
+            curr = curr.parent
+        return point
+
+    def mouse_up(self, button, point):
         # print "Mouse up on point: {}".format(point)
-        self.on_mouse_up(self, point)
+        self.on_mouse_up(self, button, point)
 
     def hit(self, point):
         """Find the view under point given, if any."""
@@ -88,13 +114,13 @@ class View(object):
             return None        
         
         # Find the local coordinates of tap 
-        #local_point = (point[0] - self.frame.topleft[0], point[1] - self.frame.topleft[1])
+        local_point = (point[0] - self.frame.topleft[0], point[1] - self.frame.topleft[1])
 
         # print "Local point: {}".format(local_point)
         
         # Walk through children, starting with top most layer
         for child in reversed(self.children):
-            hit_view = child.hit(point)
+            hit_view = child.hit(local_point)
             if hit_view is not None:                
                 return hit_view
         return self

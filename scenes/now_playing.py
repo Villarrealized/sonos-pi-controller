@@ -1,19 +1,19 @@
-import os
 from pprint import pprint
 
 from pygame import Rect
 
 from sonos import Sonos
 
-from controller.ui.scene import Scene
-from controller.ui.image import Image
-from controller.ui.button import Button
-from controller.ui.label import Label
-from controller.ui.image_view import ImageView
+from ui.scene import Scene
+from ui.image import Image
+from ui.button import Button
+from ui.label import Label
+from ui.image_view import ImageView
 from scenes.select_room import SelectRoom
 from scenes.group_rooms import GroupRooms
+from scenes.select_music import SelectMusic
 
-import colors
+import ui.colors as colors
 
 
 class NowPlaying(Scene):
@@ -25,6 +25,13 @@ class NowPlaying(Scene):
         ########## SETUP UI ##########
 
         self.background_color = colors.NAVY
+
+        # Select Room
+        select_music_image = Image('select_music',filename='select_music.png')
+        self.select_music_button = Button(Rect(20,20,30,30),image=select_music_image)
+        #Touch Handler
+        self.select_music_button.on_tapped.connect(self.select_music_modal)
+        self.add_child(self.select_music_button)
 
         # Current Room   
         self.room_label = Label(Rect(50,24,220,30),self.sonos.current_zone_label,30,colors.WHITE)
@@ -69,7 +76,7 @@ class NowPlaying(Scene):
         self.pause_button.on_tapped.connect(self.pause)
         self.add_child(self.pause_button)
 
-        ##### Previous Button #####
+        ##### Previous Track #####
         previous_track_img = Image('previous_track',filename='previous_track.png')
         previous_track_disabled_img = Image('previous_track_disabled',filename='previous_track_disabled.png')        
         self.previous_button = Button(Rect(65,370,40,40),image=previous_track_img, disabled_image=previous_track_disabled_img)
@@ -77,7 +84,7 @@ class NowPlaying(Scene):
         self.previous_button.on_tapped.connect(self.previous)
         self.add_child(self.previous_button)
 
-        ##### Next Button #####
+        ##### Next Track #####
         next_track_img = Image('next_track',filename='next_track.png')
         next_track_disabled_img = Image('next_track_disabled',filename='next_track_disabled.png')
         self.next_button = Button(Rect(215,370,40,40),image=next_track_img,disabled_image=next_track_disabled_img)
@@ -136,7 +143,6 @@ class NowPlaying(Scene):
         # Listen for all changes to the current zone   
         self.sonos.listen_for_zone_changes(self.zone_state_changed)
                      
-
     
     ###### Button Handlers #####
     def play(self, button):        
@@ -177,7 +183,11 @@ class NowPlaying(Scene):
     ##### Modals #####
     def select_room_modal(self, button):        
         self.selectRoomScene = SelectRoom(self.sonos)        
-        self.add_child(self.selectRoomScene)    
+        self.add_child(self.selectRoomScene)   
+
+    def select_music_modal(self, button):        
+        self.selectMusicScene = SelectMusic(self.sonos)        
+        self.add_child(self.selectMusicScene)    
 
     def group_rooms_modal(self, button):
         self.groupRoomScene = GroupRooms(self.sonos)
