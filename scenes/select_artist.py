@@ -12,12 +12,14 @@ import ui.colors as colors
 
 
 class SelectArtist(NavigationScene):
-    def __init__(self, sonos, title="Artists", artists=Sonos.artists()):
+    def __init__(self, sonos, title="Artists", artists=None):
         NavigationScene.__init__(self, title)
         
         self.sonos = sonos
         self.background_color = colors.NAVY        
 
+        if artists == None:
+            artists = Sonos.artists()
         self.artists = artists
         self.artist_titles = []
         for artist in self.artists:

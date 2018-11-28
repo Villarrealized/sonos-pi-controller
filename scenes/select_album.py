@@ -12,13 +12,15 @@ import ui.colors as colors
 
 
 class SelectAlbum(NavigationScene):
-    def __init__(self, sonos, title="Albums", albums=Sonos.albums()):
+    def __init__(self, sonos, title="Albums", albums=None):
         NavigationScene.__init__(self, title)
 
 
         self.sonos = sonos
         self.background_color = colors.NAVY        
 
+        if albums == None:
+            albums = Sonos.albums()
         self.albums = albums
         self.album_titles = []
         for album in self.albums:

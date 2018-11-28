@@ -275,11 +275,11 @@ class Sonos(object):
         return Sonos.instance.music_library.get_genres(complete_result=True)
 
     @classmethod
-    def playlists(cls):
+    def playlists(cls):        
         return Sonos.instance.music_library.get_playlists(complete_result=True)
     
     @classmethod
-    def favorites(cls):
+    def favorites(cls):        
         return Sonos.instance.music_library.get_sonos_favorites(complete_result=True)
     
     @classmethod
