@@ -6,6 +6,8 @@ from controller.ui.list_view import ListView
 from controller.ui.navigation_scene import NavigationScene
 from controller.ui.window import Window
 
+from scenes.select_track import SelectTrack
+
 import colors
 
 
@@ -28,6 +30,7 @@ class SelectAlbum(NavigationScene):
         self.add_child(self.album_list_view)
 
         
-    def album_selected(self, list_view, album, index):
-         print(album)
-         print(index)
+    def album_selected(self, list_view, title, index):
+        # Browse the tracks for this album
+        scene = SelectTrack(self.sonos,title,Sonos.browse(self.albums[index]))
+        self.add_child(scene)

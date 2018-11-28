@@ -6,6 +6,7 @@ from time import sleep
 
 import soco
 from soco.events import event_listener
+from soco.data_structures import to_didl_string
 
 from threading import Thread
 
@@ -180,6 +181,10 @@ class Sonos(object):
                     zone.join(self._current_zone)
                 else:
                     zone.unjoin()
+
+    def play_track(self, track):
+        if self._current_zone is not None:
+            self._current_zone.play_uri(track.resources[0].uri, to_didl_string(track))
     
     def listen_for_zone_changes(self, callback):
         self._listeningForZoneChanges = True

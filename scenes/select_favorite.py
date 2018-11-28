@@ -28,6 +28,5 @@ class SelectFavorite(NavigationScene):
         self.add_child(self.favorite_list_view)
 
         
-    def favorite_selected(self, list_view, favorite, index):
-         print(favorite)
-         print(index)
+    def favorite_selected(self, list_view, title, index):
+         print(title)         

@@ -6,6 +6,8 @@ from controller.ui.list_view import ListView
 from controller.ui.navigation_scene import NavigationScene
 from controller.ui.window import Window
 
+from scenes.select_artist import SelectArtist
+
 import colors
 
 
@@ -28,6 +30,7 @@ class SelectGenre(NavigationScene):
         self.add_child(self.genre_list_view)
 
         
-    def genre_selected(self, list_view, genre, index):
-         print(genre)
-         print(index)
+    def genre_selected(self, list_view, title, index):
+         # Browse the artists for this genre
+        scene = SelectArtist(self.sonos,title,Sonos.browse(self.genres[index]))
+        self.add_child(scene)

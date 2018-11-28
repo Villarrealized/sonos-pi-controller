@@ -75,10 +75,15 @@ class View(object):
     def remove(self):
         if self.parent is not None:
             self.parent.remove_child(self)
+
+    def popToMainScene(self):
+        current_view = self
+        while current_view.parent:
+            current_view.remove()
+            current_view = current_view.parent
     
     def parented(self):
         self.on_parented()
-
 
     def to_parent(self, point):
         ''' Convert child coordinates to parent's coordinates '''

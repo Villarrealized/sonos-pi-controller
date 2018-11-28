@@ -12,10 +12,9 @@ import colors
 
 
 class SelectArtist(NavigationScene):
-    def __init__(self, sonos, artists=Sonos.artists()):
-        NavigationScene.__init__(self, "Artists")
-
-
+    def __init__(self, sonos, title="Artists", artists=Sonos.artists()):
+        NavigationScene.__init__(self, title)
+        
         self.sonos = sonos
         self.background_color = colors.NAVY        
 
@@ -30,7 +29,7 @@ class SelectArtist(NavigationScene):
         self.add_child(self.artist_list_view)
 
         
-    def artist_selected(self, list_view, artist, index):
+    def artist_selected(self, list_view, title, index):
         # Browse the albums for this artist
-        scene = SelectAlbum(self.sonos,artist,Sonos.browse(self.artists[index]))
+        scene = SelectAlbum(self.sonos,title,Sonos.browse(self.artists[index]))
         self.add_child(scene)

@@ -40,8 +40,7 @@ class SelectMusic(ModalScene):
             y += 80
 
     def select_library_option(self, button):
-        option = button.label.text
-        print(option)
+        option = button.label.text        
         scene = None
 
         if option == 'Artists':
