@@ -215,8 +215,7 @@ class NowPlaying(Scene):
         
         # Check to see if we are still the coordinator of the group,
         # otherwise we need to switch zones
-        if not self.sonos.is_coordinator:
-            print('you are not the coordinator')
+        if not self.sonos.is_coordinator:            
             self.sonos.update_zone_to_coordinator()
 
     def update_volume_state(self, mute):
@@ -252,18 +251,21 @@ class NowPlaying(Scene):
             self.play_button.enabled = False
             self.update_play_pause('PAUSED_PLAYBACK')    
 
-        # Only set the image if it has changed
-        if self.album_art_view.image.name != self.album_label.text:
+        # Only set the image if the album name has changed or if it is empty 
+        # (sometimes the album name is empty) but the album art has changed
+        if self.album_art_view.image.name != self.album_label.text or self.album_label.text == "":                    
             # Set album art to the url given if it is not empty, otherwise use the default image
             if track['album_art'].strip() != "":
-                self.album_art_view.image = Image(self.album_label.text,image_url=track['album_art'])
+                album_art_image = Image(self.album_label.text,image_url=track['album_art'])
+                if album_art_image.surface is not None:
+                    self.album_art_view.image = album_art_image
+                else:
+                    self.album_art_view.image = self.empty_album_image
             elif tv_playing:
                 self.album_art_view.image = self.tv_album_image
             else:
-                self.album_art_view.image = self.empty_album_image
+                self.album_art_view.image = self.empty_album_image         
                         
-
-
 
     def zone_state_changed(self, data):
         '''Callback function that is called every time the zone state changes ex. new track, play, pause, volume change, etc.'''        
