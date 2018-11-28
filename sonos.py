@@ -185,6 +185,24 @@ class Sonos(object):
     def play_track(self, track):
         if self._current_zone is not None:
             self._current_zone.play_uri(track.resources[0].uri, to_didl_string(track))
+
+    def play_favorite(self, favorite):
+        print('playing favorite')
+        if self._current_zone is not None:
+            try:
+                print ('trying to play uri')
+                # Works for uri like x-sonosapi-radio (ex. Pandora)
+                self._current_zone.play_uri(favorite.reference.resources[0].uri, favorite.resource_meta_data)
+            except:
+                try:
+                    print('trying to add to queue')
+                    # Works for uri like x-rincon-cpcontainer (ex. Sound Cloud playlist)
+                    # Replace the queue with these tracks and start playing
+                    self._current_zone.clear_queue()
+                    self._current_zone.add_to_queue(favorite.reference)
+                    self._current_zone.play()
+                except: 
+                    pass
     
     def listen_for_zone_changes(self, callback):
         self._listeningForZoneChanges = True

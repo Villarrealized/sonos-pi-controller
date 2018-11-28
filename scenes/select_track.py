@@ -28,5 +28,7 @@ class SelectTrack(NavigationScene):
 
         
     def track_selected(self, list_view, title, index):        
-        self.sonos.play_track(self.tracks[index])
-        self.popToMainScene()
+        print(self.tracks[index])
+        print(vars(self.track[index]))
+        # self.sonos.play_track(self.tracks[index])
+        # self.popToMainScene()
