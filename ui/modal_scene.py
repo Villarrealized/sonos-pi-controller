@@ -1,11 +1,11 @@
 from pygame import Rect
 
-from controller.ui.scene import Scene
-from controller.ui.image import Image
-from controller.ui.button import Button
-from controller.ui.label import Label
+from ui.scene import Scene
+from ui.image import Image
+from ui.button import Button
+from ui.label import Label
 
-import colors
+import ui.colors as colors
 
 
 class ModalScene(Scene):

@@ -2,12 +2,12 @@ from pygame import Rect
 
 from sonos import Sonos
 
-from controller.ui.modal_scene import ModalScene
-from controller.ui.image import Image
-from controller.ui.button import Button
-from controller.ui.label import Label
+from ui.modal_scene import ModalScene
+from ui.image import Image
+from ui.button import Button
+from ui.label import Label
 
-import colors
+import ui.colors as colors
 
 
 class SelectRoom(ModalScene):

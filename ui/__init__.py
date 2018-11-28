@@ -2,7 +2,7 @@ from signal import alarm, signal, SIGALRM
 
 import pygame
 
-from controller.device.backlight import Backlight
+from device.backlight import Backlight
 from window import Window
 
 def init():

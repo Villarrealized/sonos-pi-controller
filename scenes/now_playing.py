@@ -4,16 +4,16 @@ from pygame import Rect
 
 from sonos import Sonos
 
-from controller.ui.scene import Scene
-from controller.ui.image import Image
-from controller.ui.button import Button
-from controller.ui.label import Label
-from controller.ui.image_view import ImageView
+from ui.scene import Scene
+from ui.image import Image
+from ui.button import Button
+from ui.label import Label
+from ui.image_view import ImageView
 from scenes.select_room import SelectRoom
 from scenes.group_rooms import GroupRooms
 from scenes.select_music import SelectMusic
 
-import colors
+import ui.colors as colors
 
 
 class NowPlaying(Scene):

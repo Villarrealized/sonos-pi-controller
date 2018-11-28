@@ -77,12 +77,14 @@ class View(object):
             self.parent.remove_child(self)
 
     def popToMainScene(self):
+        ''' Remove all the views until top scene is the current view '''
         current_view = self
         while current_view.parent:
             current_view.remove()
             current_view = current_view.parent
     
     def parented(self):
+        ''' Notify a view when it has been assigned a parent'''
         self.on_parented()
 
     def to_parent(self, point):

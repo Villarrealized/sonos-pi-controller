@@ -3,7 +3,7 @@ import pygame
 from view import View
 from label import Label
 from callback_signal import Signal
-import colors
+import ui.colors as colors
 
 class Button(View):
     """A button that can have an image or a label or both.

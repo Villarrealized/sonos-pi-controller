@@ -2,8 +2,8 @@ from pygame import Rect
 
 from sonos import Sonos
 
-from controller.ui.list_view import ListView
-from controller.ui.modal_scene import ModalScene
+from ui.list_view import ListView
+from ui.modal_scene import ModalScene
 
 from scenes.select_artist import SelectArtist
 from scenes.select_album import SelectAlbum
@@ -11,11 +11,11 @@ from scenes.select_genre import SelectGenre
 from scenes.select_playlist import SelectPlaylist
 from scenes.select_favorite import SelectFavorite
 
-from controller.ui.image import Image
-from controller.ui.button import Button
-from controller.ui.label import Label
+from ui.image import Image
+from ui.button import Button
+from ui.label import Label
 
-import colors
+import ui.colors as colors
 
 
 class SelectMusic(ModalScene):

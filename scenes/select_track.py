@@ -2,11 +2,11 @@ from pygame import Rect
 
 from sonos import Sonos
 
-from controller.ui.list_view import ListView
-from controller.ui.navigation_scene import NavigationScene
-from controller.ui.window import Window
+from ui.list_view import ListView
+from ui.navigation_scene import NavigationScene
+from ui.window import Window
 
-import colors
+import ui.colors as colors
 
 
 class SelectTrack(NavigationScene):

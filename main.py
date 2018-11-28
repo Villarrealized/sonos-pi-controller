@@ -10,10 +10,10 @@ from pygame.locals import MOUSEBUTTONUP
 from sonos import Sonos
 
 # import project files
-import controller.ui as ui
-from controller.ui.window import Window
-import colors
-from controller.device.backlight import Backlight
+import ui as ui
+from ui.window import Window
+import ui.colors as colors
+from device.backlight import Backlight
 from scenes.now_playing import NowPlaying
 
 # Handle Terminate signal, exit gracefully.

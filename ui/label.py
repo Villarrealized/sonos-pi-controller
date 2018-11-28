@@ -2,7 +2,7 @@ import pygame
 from pygame.font import Font
 
 from view import View
-import colors
+import ui.colors as colors
 
 class Label(View):
 

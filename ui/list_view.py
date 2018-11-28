@@ -1,12 +1,12 @@
 from pygame import Rect
 
-from controller.ui.view import View
-from controller.ui.image import Image
-from controller.ui.button import Button
-from controller.ui.label import Label
-from controller.ui.callback_signal import Signal
+from ui.view import View
+from ui.image import Image
+from ui.button import Button
+from ui.label import Label
+from ui.callback_signal import Signal
 
-import colors
+import ui.colors as colors
 
 
 class ListView(View):
