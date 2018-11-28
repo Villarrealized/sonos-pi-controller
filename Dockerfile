@@ -1,4 +1,4 @@
-FROM bytegenesis/debian-pygame-base
+FROM villarrealized/debian-pygame-base
 RUN mkdir -p /usr/src/app
 COPY requirements.txt /usr/src/app
 WORKDIR /usr/src/app

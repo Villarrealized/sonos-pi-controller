@@ -59,3 +59,4 @@ class GroupRooms(ModalScene):
             if zone in members:
                 # this zone is already a member
                 select_room_button.checked = True
+                

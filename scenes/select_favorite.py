@@ -13,7 +13,6 @@ class SelectFavorite(NavigationScene):
     def __init__(self, sonos, favorites=Sonos.favorites()):
         NavigationScene.__init__(self, "Favorites")
 
-
         self.sonos = sonos
         self.background_color = colors.NAVY        
 
@@ -28,5 +27,7 @@ class SelectFavorite(NavigationScene):
         self.add_child(self.favorite_list_view)
 
         
-    def favorite_selected(self, list_view, title, index):
-         print(title)         
+    def favorite_selected(self, list_view, title, index):         
+        self.sonos.play_favorite(self.favorites[index])
+        self.popToMainScene()
+        

@@ -15,7 +15,6 @@ class SelectGenre(NavigationScene):
     def __init__(self, sonos, genres=Sonos.genres()):
         NavigationScene.__init__(self, "Genres")
 
-
         self.sonos = sonos
         self.background_color = colors.NAVY        
 
