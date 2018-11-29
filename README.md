@@ -79,7 +79,7 @@ The sonos-pi-controller includes the following features:
 ![Raspberry Pi Controller mounted to wall](./resources/screenshots/controller-mounted.jpg)
 
 
-### Troubleshooting
+## Troubleshooting
 If you have any issues getting started, please reach out and I will try to help.
 
 If your touchscreen is not calibrated correctly, try running the calibration program:
