@@ -1,0 +1,1 @@
+Almost all of the icons are from the good folks at https://icons8.com
