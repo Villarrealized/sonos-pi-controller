@@ -14,6 +14,7 @@ The sonos-pi-controller includes the following features:
 * View album art, track name, artist, album
 * Select room (top right icon)
 * Group rooms (bottom right icon)
+  * Select/deselect all rooms (top right party icon)
 * Select music from music library (top left icon)
   * Artists
   * Albums
