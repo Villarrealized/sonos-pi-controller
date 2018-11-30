@@ -14,7 +14,23 @@ class GroupRooms(ModalScene):
     def __init__(self, sonos):
         ModalScene.__init__(self, sonos.current_zone)
              
-        self.sonos = sonos   
+        self.sonos = sonos
+
+        in_party_mode = Sonos.in_party_mode()        
+
+        ##### Party Mode On Button #####        
+        icon_party_on_image = Image('icon_party_on',filename='icon_party_on.png')
+        self.party_on_button = Button(Rect(270,20,30,30),image=icon_party_on_image)        
+        self.party_on_button.hidden = in_party_mode
+        self.party_on_button.on_tapped.connect(self.group_all)
+        self.add_child(self.party_on_button)
+
+        ##### Party Mode Off Button #####
+        icon_party_off_image = Image('icon_party_off',filename='icon_party_off.png')        
+        self.party_off_button = Button(Rect(270,20,30,30),image=icon_party_off_image)        
+        self.party_off_button.on_tapped.connect(self.group_none)
+        self.party_off_button.hidden = not in_party_mode
+        self.add_child(self.party_off_button)
 
         ##### Done Button #####        
         self.done_button = Button(Rect(20,430,280,40),40 ,text='Done')        
@@ -39,6 +55,23 @@ class GroupRooms(ModalScene):
 
             self.parent.group_rooms(rooms)
         self.remove()            
+    
+    def group_all(self, button):        
+        self.unchanged = False
+        self.toggle_party_mode_buttons()
+        for button in self.room_buttons:
+            button.checked = True     
+    
+    def group_none(self, button):
+        self.unchanged = False
+        self.toggle_party_mode_buttons()
+        for button in self.room_buttons:
+            button.checked = False
+
+    def toggle_party_mode_buttons(self):
+        self.party_on_button.hidden = not self.party_on_button.hidden
+        self.party_off_button.hidden = not self.party_off_button.hidden
+
 
     def select_room(self, button):
         self.unchanged = False

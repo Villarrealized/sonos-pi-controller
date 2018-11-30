@@ -109,6 +109,19 @@ class Sonos(object):
                 zone = Sonos.get_zone_by_name(member)
                 zone.volume += volume_diff
 
+    @property
+    def play_mode(self):
+        if self._current_zone is not None:
+            return self._current_zone.play_mode
+
+    @play_mode.setter
+    def play_mode(self, play_mode):
+        if self._current_zone is not None:            
+            try:
+                self._current_zone.play_mode = play_mode
+            except:
+                pass
+
 
     @property
     def group_members(self):
@@ -150,7 +163,7 @@ class Sonos(object):
     def is_coordinator(self):
         if self._current_zone is not None:
             return self._current_zone.player_name == self._current_zone.group.coordinator.player_name 
-        return False
+        return False        
 
     def update_zone_to_coordinator(self):
         if self._current_zone is not None:
@@ -181,19 +194,6 @@ class Sonos(object):
                     zone.join(self._current_zone)
                 else:
                     zone.unjoin()
-    
-    @property
-    def play_mode(self):
-        if self._current_zone is not None:
-            return self._current_zone.play_mode
-
-    @play_mode.setter
-    def play_mode(self, play_mode):
-        if self._current_zone is not None:            
-            try:
-                self._current_zone.play_mode = play_mode
-            except:
-                pass
 
     def play_track(self, track):
         if self._current_zone is not None:
@@ -287,6 +287,13 @@ class Sonos(object):
         return Sonos.instance.music_library.browse(ml_item,0,100000,True)
 
 
+    @classmethod
+    def in_party_mode(cls):
+        ''' Returns bool '''
+        zones = Sonos.get_zone_groups()
+        # Should only ever be 1 coordinator if we are in party mode
+        coordinator_zones = [zone for zone in zones if zone["is_coordinator"] == True]
+        return len(coordinator_zones) == 1 
                 
     @staticmethod
     def get_zone_names():
