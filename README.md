@@ -3,8 +3,8 @@ A touch screen (Adafruit PiTFT 3.5") Sonos controller for Raspberry Pi. Runs in 
 
 This controller relies upon the [SoCo library](https://github.com/SoCo/SoCo) for communicating with [Sonos speakers](https://www.sonos.com/en-us/system) and the [pygame library](https://github.com/pygame/pygame) for the UI.
 
+![Now Playing](./resources/screenshots/sonospi.gif)
 ![Raspberry Pi Controller mounted to wall](./resources/screenshots/controller-mounted.jpg)
-![Now Playing](./resources/screenshots/now_playing.png)
 
 ## Features
 The sonos-pi-controller includes the following features:
