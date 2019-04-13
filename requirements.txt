@@ -1,1 +1,4 @@
-soco==0.16
+#soco==0.16 # wait to use until soco has been updated past 0.16
+# Sonos API has changed and there are breaking changes
+
+git+https://github.com/Villarrealized/SoCo.git
